@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\PtpAccountController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ptpLoginController;
+use App\Http\Controllers\PtpSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,3 +21,9 @@ Route::get('/', function () {
 });
 Route::get('/login', [ptpLoginController::class, 'ptpIndex'])->name('login.form');
 Route::post('/login', [ptpLoginController::class, 'ptpLogin'])->name('login.submit');
+Route::get('/ptp-session/get', [PtpSessionController::class, 'PtpSessionData'])->name('ptpsession.get');
+Route::get('/ptp-session/set', [PtpSessionController::class, 'ptpStoreSessionData'])->name('ptpsession.get');
+Route::get('/ptp-session/delete', [PtpSessionController::class, 'ptpDeleteSessionData'])->name('ptpsession.get');
+Route::get('/ptp-login', [PtpAccountController::class, 'ptplogin'])->name('ptpaccount.ptplogin');
+Route::get('/ptp-logout', [PtpAccountController::class, 'ptpLogout'])->name('ptpaccount.ptpLogout');
+Route::post('/ptp-login', [PtpAccountController::class, 'ptpLoginSubmit'])->name('ptpaccount.ptpLoginSubmit');
