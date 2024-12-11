@@ -28,4 +28,10 @@ class PtpKhoaController extends Controller
         DB::update("UPDATE ptpkhoa SET PTPTENKH = ? WHERE PTPMAKH = ?", [$tenkh,$makh]);
         return redirect('/khoas');
     }
+    // delete -> $makh
+public function ptpDelete($makh)
+{
+$khoa = DB::delete('delete from ptpkhoa where PTPMAKH =?',[$makh]);
+return redirect('/khoas');
+}
 }

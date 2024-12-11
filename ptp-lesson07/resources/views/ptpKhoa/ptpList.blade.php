@@ -35,7 +35,8 @@
                     <a href="/khoas/detail/{{$item->PTPMAKH}}" class="btn btn-success">Chi tiết</a>
                     <a href="/khoas/edit/{{$item->PTPMAKH}}" class="btn btn-primary">
                         Sửa</a>
-                        <a href="/khoas/delete/{{$item->PTPMAKH}}" class="btn btn-danger">
+                        <a href="/khoas/delete/{{$item->PTPMAKH}}" class="btn btn-danger"
+                                                                    onclick="return confirm('Bạn muốn xóa không?');">
                         Xóa </a>
                 </td>
             </tr>
