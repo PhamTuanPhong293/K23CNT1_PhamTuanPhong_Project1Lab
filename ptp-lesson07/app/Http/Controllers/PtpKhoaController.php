@@ -29,9 +29,30 @@ class PtpKhoaController extends Controller
         return redirect('/khoas');
     }
     // delete -> $makh
-public function ptpDelete($makh)
-{
-$khoa = DB::delete('delete from ptpkhoa where PTPMAKH =?',[$makh]);
-return redirect('/khoas');
-}
+    public function ptpDelete($makh)
+    {
+        $khoa = DB::delete('delete from ptpkhoa where PTPMAKH =?',[$makh]);
+        return redirect('/khoas');
+    }
+    public function ptpInsert()
+    {
+        return view('PtpKhoa.ptpInsert');
+    }
+    public function ptpInsertSubmit(Request $request)
+    {
+            $validate = $request->validate([
+                'PTPMAKH'=> 'required|max:10',
+                'PTPTENKH'=> 'required|max:50',
+            ],
+            [
+                'PTPMAKH.required' => 'Vui lòng nhập mã khoa.',
+                'PTPMAKH.max' => 'Mã khoa tối đa 2 ký tự.',
+                'PTPTENKH.required' => 'Vui lòng nhập tên khoa.',
+                'PTPTENKH.max' => 'Tên khoa tối đa 50 ký tự.',
+            ]
+        );
+        $makh = $request->input('PTPMAKH');
+        $tenkh = $request->input('PTPTENKH');
+        DB::insert('INSERT INTO ptpkhoa(PTPMAKH,PTPTENKH) VALUES (?,?)', [$tenkh,$makh]);
+    }
 }

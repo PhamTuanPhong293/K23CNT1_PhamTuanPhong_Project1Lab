@@ -25,3 +25,6 @@ Route::get('/khoas/edit/{makh}',
 Route::post('/khoas/edit/',
         [PtpKhoaController::class,'ptpEditSubmit'])->name('ptpkhoa.ptpEditSubmit');
 Route::get('/khoas/delete/{makh}',[PtpKhoaController::class,'ptpDelete'])->name('ptpkhoa.ptpDelete');
+Route::get('/khoas/insert',[PtpKhoaController::class,'ptpInsert'])->name('ptpkhoa.ptpInsert');
+Route::post('/khoas/insert',[PtpKhoaController::class,'ptpInsertSubmit'])->name('ptpkhoa.ptpInsertSubmit');
+Route::get('/monhocs',[PtpKhoaController::class,'ptpList'])->name('');
