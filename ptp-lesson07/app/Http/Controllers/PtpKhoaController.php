@@ -53,6 +53,8 @@ class PtpKhoaController extends Controller
         );
         $makh = $request->input('PTPMAKH');
         $tenkh = $request->input('PTPTENKH');
-        DB::insert('INSERT INTO ptpkhoa(PTPMAKH,PTPTENKH) VALUES (?,?)', [$tenkh,$makh]);
+        DB::insert("INSERT INTO ptpkhoa (PTPMAKH, PTPTENKH) VALUES (?, ?)", [$makh, $tenkh]);
+
+        return redirect("/khoas");
     }
 }

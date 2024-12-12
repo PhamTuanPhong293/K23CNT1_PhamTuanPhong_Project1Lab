@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PtpKhoaController;
+use App\Http\Controllers\PtpMonHocController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,4 +28,19 @@ Route::post('/khoas/edit/',
 Route::get('/khoas/delete/{makh}',[PtpKhoaController::class,'ptpDelete'])->name('ptpkhoa.ptpDelete');
 Route::get('/khoas/insert',[PtpKhoaController::class,'ptpInsert'])->name('ptpkhoa.ptpInsert');
 Route::post('/khoas/insert',[PtpKhoaController::class,'ptpInsertSubmit'])->name('ptpkhoa.ptpInsertSubmit');
-Route::get('/monhocs',[PtpKhoaController::class,'ptpList'])->name('');
+
+
+//MonHoc
+Route::get('/monhocs',
+        [PtpMonHocController::class,'ptpList'])->name('ptpmonhoc.ptpList');
+Route::get('/monhocs/delete/{mamh}',[PtpMonHocController::class,'ptpDelete'])->name('ptpmonhoc.ptpDelete');
+Route::get('/monhocs/edit/{mamh}',
+        [PtpMonHocController::class,'ptpEdit'])->name('ptpmonhoc.ptpEdit');
+Route::post('/monhocs/edit/',
+        [PtpMonHocController::class,'ptpEditSubmit'])->name('ptpmonhoc.ptpEditSubmit');
+Route::get('/monhocs/detail/{mamh}',
+        [PtpMonHocController::class,'ptpGetMonHoc'])->name('ptpmonhoc.ptpGetMonHoc');
+Route::get('/monhocs/insert',
+        [PtpMonHocController::class,'ptpInsert'])->name('ptpmonhoc.ptpInsert');
+Route::post('/monhocs/insert',
+        [PtpMonHocController::class,'ptpInsertSubmit'])->name('ptpmonhoc.ptpInsertSubmit');

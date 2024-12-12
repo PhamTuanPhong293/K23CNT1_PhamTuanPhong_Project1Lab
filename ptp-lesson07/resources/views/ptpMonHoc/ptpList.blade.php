@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>PTP - Danh sách khoa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-</head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
 <body>
 <section class="container my-3">
     <div class="card">
@@ -28,21 +28,36 @@
                     @php
                     $stt=0;
                     @endphp
-                    @foreach ($monHocs as $item)
+                    @foreach ($ptpMonHocs as $item)
                     @php
                         $stt++;
                     @endphp
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>1</td>
+                        <td>{{$item->PTPMAMH}}</td>
+                        <td>{{$item->PTPTENMH}}</td>
+                        <td>{{$item->PTPSOTIET}}</td>
+                        <td> <a href="/monhocs/detail/{{$item->PTPMAMH}}" class="btn btn-success">
+                                Chi tiết <i class="fa-solid fa-eye"></i></a>
+                             <a href="/monhocs/edit/{{$item->PTPMAMH}}" class="btn btn-primary">
+                                Sửa <i class="fa-solid fa-pen-to-square"></i></a>
+                             <a href="/monhocs/delete/{{$item->PTPMAMH}}" class="btn btn-danger"
+                                                                            onclick="return confirm('Bạn muốn xóa không?');"
+                                >Xóa <i class="fa-solid fa-trash"></i></a></td>
                     </tr>
+                    @endforeach
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="5">
+                            <h3>Tổng số môn học: {{$ptpMonHocs->count()}}</h3>
+                        </th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
+    <a href="/monhocs/insert" class="btn btn-primary">Thêm mới <i class="fa-solid fa-circle-plus"></i></a>
 </section>
 </body>
 </html>
