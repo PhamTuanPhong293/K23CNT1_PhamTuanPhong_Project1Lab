@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Faker\Factory as Faker;
 
 class PtpVattuTableSeeder extends Seeder
 {
@@ -25,5 +26,16 @@ class PtpVattuTableSeeder extends Seeder
             'ptpDvTinh'=>'Bộ',
             'ptpPhanTram'=>50,
             ]);
+        $faker = Faker::create();
+            foreach(range(1,50) as $index)
+            {
+                DB::table('ptpvattu')->insert([
+                    'ptpMaVTu'=>$faker->word(4),
+                    // 'MaNCC'=>$faker->word(15),
+                    'ptpTenVTu'=>$faker->sentence(5),
+                    'ptpDvTinh'=>$faker->word(3),
+                    'ptpPhanTram'=>$faker->randomFloat('2',0,100)
+                    ]);
+            }
     }
 }
