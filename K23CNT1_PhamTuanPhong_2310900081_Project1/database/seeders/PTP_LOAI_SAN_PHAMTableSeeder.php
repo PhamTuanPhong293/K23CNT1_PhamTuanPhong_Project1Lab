@@ -16,6 +16,23 @@ class PTP_LOAI_SAN_PHAMTableSeeder extends Seeder
         //
         DB::table('PTP_LOAI_SAN_PHAM')->insert([
             'ptpMaLoai' => 'L001',
+            'ptpTenLoai'=> 'Cây cảnh văn phòng',
+            'ptpTrangThai'=> 0,
+        ]);
+        DB::table('PTP_LOAI_SAN_PHAM')->insert([
+            'ptpMaLoai' => 'L002',
+            'ptpTenLoai'=> 'Cây để bàn',
+            'ptpTrangThai'=> 0,
+        ]);
+        DB::table('PTP_LOAI_SAN_PHAM')->insert([
+            'ptpMaLoai' => 'L003',
+            'ptpTenLoai'=> 'Cây cảnh phong thủy',
+            'ptpTrangThai'=> 0,
+        ]);
+        DB::table('PTP_LOAI_SAN_PHAM')->insert([
+            'ptpMaLoai' => 'L004',
+            'ptpTenLoai'=> 'Cây thủy canh',
+            'ptpTrangThai'=> 0,
         ]);
     }
 }

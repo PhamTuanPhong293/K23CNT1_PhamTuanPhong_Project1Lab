@@ -18,5 +18,10 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+        $this->call([
+            PTP_QUAN_TRITableSeeder::class,
+            PTP_SAN_PHAMTableSeeder::class,
+            PTP_LOAI_SAN_PHAMTableSeeder::class,
+            ]);
     }
 }
