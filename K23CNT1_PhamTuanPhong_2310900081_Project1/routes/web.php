@@ -40,3 +40,7 @@ Route::post('/ptp-admins/ptp-loai-san-pham/ptp-edit',[PTP_LOAI_SAN_PHAMControlle
 Route::get('/ptp-admins/ptp-loai-san-pham/ptp-delete/{id}',[PTP_LOAI_SAN_PHAMController::class,'ptpDelete'])
         ->name('ptpadmins.ptploaisanpham.ptpdelete');
 
+//view
+// routes/web.php
+Route::get('/ptp-admins/ptp-loai-san-pham/ptp-view/{id}', [PTP_LOAI_SAN_PHAMController::class, 'ptpView'])
+        ->name('ptpadmins.ptploaisanpham.ptpview');

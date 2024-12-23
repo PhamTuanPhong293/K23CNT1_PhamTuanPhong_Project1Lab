@@ -1,4 +1,5 @@
 <ul class="list-group">
+    <img src="{{ asset('images/123.png') }}" alt="Ảnh">
     <li class="list-group-item active" aria-current="true">Quản trị nội dung</li>
     <li class="list-group-item">
         <a href="#">Danh sách quản trị</a>

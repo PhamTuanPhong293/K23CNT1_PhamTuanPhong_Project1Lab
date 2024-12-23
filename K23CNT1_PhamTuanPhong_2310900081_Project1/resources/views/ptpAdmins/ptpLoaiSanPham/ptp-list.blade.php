@@ -31,10 +31,10 @@
                     <td>{{$item->ptpTenLoai}}</td>
                     <td>{{$item->ptpTrangThai}}</td>
                     <td>
-                        view /
-                        <a href="/ptp-admins/ptp-loai-san-pham/ptp-edit/{{$item->id}}">EDIT</a>
-                        <a href="/ptp-admins/ptp-loai-san-pham/ptp-delete/{{$item->id}}"
-                            onclick="return confirm('Bạn có chắc chắn xóa không?')">DELETE</a>
+                        <a href="{{ route('ptpadmins.ptploaisanpham.ptpview', $item->id) }}" class="btn btn-primary btn-sm">View<i class="fa-solid fa-eye"></a>
+                        <a href="/ptp-admins/ptp-loai-san-pham/ptp-edit/{{$item->id}}" class="btn btn-warning btn-sm">EDIT<i class="fa-solid fa-pen-to-square"></a>
+                        <a href="/ptp-admins/ptp-loai-san-pham/ptp-delete/{{$item->id}}" class="btn btn-danger btn-sm"
+                            onclick="return confirm('Bạn có chắc chắn xóa không?')">DELETE<i class="fa-solid fa-trash"></i></a>
                     </td>
                 </tr>
             @empty

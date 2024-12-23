@@ -57,4 +57,15 @@ class PTP_LOAI_SAN_PHAMController extends Controller
     $ptpLoaiSanPham = PTP_LOAI_SAN_PHAM::find($id);
     $ptpLoaiSanPham->delete();
     }
+    //view
+    public function ptpView($id)
+{
+    $ptpLoaiSanPham = PTP_LOAI_SAN_PHAM::find($id);
+
+    if (!$ptpLoaiSanPham) {
+        abort(404); // Xử lý nếu không tìm thấy
+    }
+
+    return view('ptpAdmins.ptpLoaiSanPham.ptp-view', compact('ptpLoaiSanPham'));
+}
 }
