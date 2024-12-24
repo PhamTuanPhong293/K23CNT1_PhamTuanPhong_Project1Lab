@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PTP_LOAI_SAN_PHAMController;
 use App\Http\Controllers\PTP_QUAN_TRIController;
+use App\Http\Controllers\PTP_SAN_PHAMController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,3 +45,11 @@ Route::get('/ptp-admins/ptp-loai-san-pham/ptp-delete/{id}',[PTP_LOAI_SAN_PHAMCon
 // routes/web.php
 Route::get('/ptp-admins/ptp-loai-san-pham/ptp-view/{id}', [PTP_LOAI_SAN_PHAMController::class, 'ptpView'])
         ->name('ptpadmins.ptploaisanpham.ptpview');
+
+//sanpham
+Route::get('/ptp-admins/ptp-san-pham',[PTP_SAN_PHAMController::class,'ptpList'])
+        ->name('ptpadmins.ptpsanpham.ptplist');
+Route::get('/ptp-admins/ptp-san-pham/ptp-create',[PTP_SAN_PHAMController::class,'ptpCreate'])
+        ->name('ptpadmins.ptpsanpham.ptpcreate');
+Route::post('/ptp-admins/ptp-san-pham/ptp-create',[PTP_SAN_PHAMController::class,'ptpCreateSubmit'])
+        ->name('ptpadmins.ptpsanpham.ptpcreatesubmit');
