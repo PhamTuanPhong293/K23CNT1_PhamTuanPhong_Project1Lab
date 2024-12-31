@@ -23,9 +23,10 @@ class PTP_LOAI_SAN_PHAMController extends Controller
     public function ptpCreateSubmit(Request $request){
 
         $validationDate = $request->validate([
-            'ptpMaLoai'=> 'required|unique',
-            'ptpTenLoai'=> 'required|unique',
+            'ptpMaLoai' => 'required|unique:ptp_loai_san_pham,ptpMaLoai',
+            'ptpTenLoai' => 'required|unique:ptp_loai_san_pham,ptpTenLoai',
         ]);
+        
 
         $ptpLoaiSanPhan = new PTP_LOAI_SAN_PHAM;
         $ptpLoaiSanPhan->ptpMaLoai = $request->ptpMaLoai;

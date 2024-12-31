@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\PTP_HOA_DONController;
+use App\Http\Controllers\PTP_KHACH_HANGController;
 use App\Http\Controllers\PTP_LOAI_SAN_PHAMController;
 use App\Http\Controllers\PTP_QUAN_TRIController;
 use App\Http\Controllers\PTP_SAN_PHAMController;
+use App\Models\PTP_SAN_PHAM;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -53,3 +56,26 @@ Route::get('/ptp-admins/ptp-san-pham/ptp-create',[PTP_SAN_PHAMController::class,
         ->name('ptpadmins.ptpsanpham.ptpcreate');
 Route::post('/ptp-admins/ptp-san-pham/ptp-create',[PTP_SAN_PHAMController::class,'ptpCreateSubmit'])
         ->name('ptpadmins.ptpsanpham.ptpcreatesubmit');
+Route::get('/ptp-admins/ptp-san-pham/ptp-edit/{id}',[PTP_SAN_PHAMController::class, 'ptpEdit'])
+                ->name('ptpadmins.ptpsanpham.ptpedit');
+Route::post('/ptp-admins/ptp-san-pham/ptp-edit/{id}',[PTP_SAN_PHAMController::class, 'ptpEditSubmit'])
+                ->name('ptpadmins.ptpsanpham.ptpeditsubmit');
+Route::get('/ptp-admins/ptp-san-pham/ptp-detail/{id}',[PTP_SAN_PHAMController::class, 'ptpDetail'])
+                ->name('ptpadmins.ptpsanpham.ptp-detail');
+Route::delete('/ptp-admins/ptp-san-pham/ptp-delete',[PTP_SAN_PHAMController::class, 'ptpDelete'])
+                ->name('ptpadmins.ptpsanpham.ptpdelete');
+
+//Hóa Đơn
+Route::get('ptp-admins/ptp-hoa-don',[PTP_HOA_DONController::class, 'ptpList'])
+                ->name('ptpadmins.ptphoadon.ptplist');
+//khách hàng
+Route::get('/ptp-admins/ptp-khack-hang', [PTP_KHACH_HANGController::class, 'ptpList'])
+                ->name('ptpadmins.ptpkhachhang.ptplist');
+// Create
+Route::get('/ptp-admin/ptp-khack-hang/ptp-create', [PTP_KHACH_HANGController::class,'ptpCreate'])
+                ->name('ptpadmins.ptpkhachhang.ptpcreate');
+Route::post('/ptp-admin/ptp-khack-hang/ptp-create', [PTP_KHACH_HANGController::class,'ptpCreateSubmit'])
+                ->name('ptpadmins.ptpkhachhang.ptpcreatesubmit');
+
+
+

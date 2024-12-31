@@ -10,6 +10,10 @@
     <li class="list-group-item">
         <a href="/ptp-admins/ptp-san-pham">Sản Phẩm</a>
     </li>
-    <li class="list-group-item">A fourth item</li>
-    <li class="list-group-item">And a fifth one</li>
+    <li class="list-group-item">
+        <a href="/ptp-admins/ptp-khack-hang">Khách Hàng</a>
+    </li>
+    <li class="list-group-item">
+        <a href="/ptp-admins/ptp-hoa-don">Hóa Đơn</a>
+    </li>
   </ul>
