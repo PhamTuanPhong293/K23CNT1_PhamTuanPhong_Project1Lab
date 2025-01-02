@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PTP_HOA_DON;
+use App\Models\PTP_KHACH_HANG;
 use App\Models\PTP_QUAN_TRI;
 use Illuminate\Http\Request;
 
@@ -14,87 +15,142 @@ class PTP_HOA_DONController extends Controller
         return view("ptpadmins.ptphoadon.ptplist", compact("ptpHoaDon"));
     }
     
-    public function ptpCreate(){
-        return view('ptpadmin.ptpAdmin.ptpCreate');
-    }
-    public function ptpCreateSubmit(Request $request)
-    {
-        // Validate dữ liệu từ form
-        $validatedData = $request->validate([
-            'ptpTaiKhoan' => 'required|string|min:6|max:255',
-            'ptpMatKhau' => 'required|min:6',
-            'ptpTrangThai' => 'required|in:1,0',
-        ], [
-            'ptpTaiKhoan.required' => 'Tài khoản là bắt buộc.',
-            'ptpMatKhau.required' => 'Mật khẩu là bắt buộc.',
-            'ptpTrangThai.required'=> 'Trạng thái bắt buộc'
-        ]);
 
-        // Tạo đối tượng sản phẩm mới
-        $ptpQuanTri = new PTP_QUAN_TRI;
-        $ptpQuanTri->ptpTaiKhoan  = $request->ptpTaiKhoan;
-        $ptpQuanTri->ptpMatKhau = md5($request->ptpMatKhau);
-        $ptpQuanTri->ptpTrangThai = $request->ptpTrangThai;
-        $ptpQuanTri->save();
-        return redirect()->route('ptpadmins.ptphoadon.ptplist')->with('message', 'Thêm tài khoản quản trị thành công!');
-
-    }
-    public function ptpDetailAdmin($id)
-    {
-        $ptpAdmins = PTP_QUAN_TRI::where('id', $id)->first();
-    
-        // Nếu không tìm thấy loại sản phẩm
-        if (!$ptpAdmins) {
-            return redirect()->route('ptpadmin.ptpListAdmin');
-        }
-    
-        // Trả về view với dữ liệu loại sản phẩm
-        return view('ptpadmins.ptpadmin.ptpdetail', compact('ptpAdmin'));
-    }
-    public function ptpEditAdmin($id)
+#insert
+public function ptpcreate()
 {
-    $ptpAdmins = PTP_QUAN_TRI::where('id', $id)->first();
-    if (!$ptpAdmins) {
-        return redirect()->route('ptpadmins.ptpListAdmin');
-    }
-    return view('ptpadmins.ptpadmin.ptpEdit', compact('ptpAdmin'));
+    // Lấy danh sách khách hàng để chọn
+    $ptpkhachhang = PTP_KHACH_HANG::all();
+    return view('ptpadmins.ptphoadon.ptpcreate', ['ptpkhachhang' => $ptpkhachhang]);
 }
 
-public function ptpEditAdminSubmit(Request $request)
+#insert submit
+public function ptpcreatesubmit(Request $request)
 {
-    // Lấy dữ liệu từ form
-    $id_ = $request->id;  // Hoặc $request->ptpID
-    $ptpTaiKhoan = $request->ptpTaiKhoan; // Mã loại sản phẩm
-    $ptpMatKhau = md5($request->ptpMatKhau); // Tên loại sản phẩm
-    $ptpTrangThai = $request->ptpTrangThai; // Trạng thái sản phẩm
+    // Xác thực dữ liệu
+    $request->validate([
+        'ptpMakhachhang' => 'required|exists:PTP_KHACH_HANG,id',
+        'ptpMaHoaDon' => 'required|string|unique:PTP_HOA_DON,ptpMaHoaDon',
+        'ptpNgayHoaDon' => 'required|date',
+        'ptpHotenKhachHang' => 'required|string|max:255',
+        'ptpEmail' => 'nullable|email|max:255',
+        'ptpDienThoai' => 'nullable|string|max:255',
+        'ptpDiaChi' => 'nullable|string|max:255',
+        'ptpTongGiaTri' => 'required|numeric|min:0',
+        'ptpTrangThai' => 'required|boolean',
+    ]);
 
-    // Lấy bản ghi cần cập nhật từ database
-    $ptpEdit = PTP_QUAN_TRI::where('id', $id_)->first();
+    // Giới hạn giá trị ptpTongGiaTri (ví dụ giới hạn tối đa là 99999999999999.99)
+    $maxTongGiaTri = 99999999999999.99;  // Giới hạn giá trị tối đa
+    $ptpTongGiaTri = min($request->ptpTongGiaTri, $maxTongGiaTri);  // Giới hạn giá trị nếu vượt quá
 
-    // Kiểm tra xem bản ghi có tồn tại không
-    if ($ptpEdit) {
-        // Cập nhật các trường dữ liệu
-        $ptpEdit->ptpTaiKhoan = $ptpTaiKhoan;
-        $ptpEdit->ptpMatKhau = $ptpMatKhau;
-        $ptpEdit->ptpTrangThai = $ptpTrangThai;
+    // Tạo hóa đơn mới
+    $ptpHoaDon = new PTP_HOA_DON();
+    $ptpHoaDon->ptpMaHoaDon = $request->ptpMaHoaDon;
+    $ptpHoaDon->ptpMakhachhang = $request->ptpMaKhachHang;
+    $ptpHoaDon->ptpNgayHoaDon = $request->ptpNgayHoaDon;
+    $ptpHoaDon->ptpHoTenKhachHang = $request->ptpHoTenKhachHang;
+    $ptpHoaDon->ptpEmail = $request->ptpEmail;
+    $ptpHoaDon->ptpDienThoai = $request->ptpDienThoai;
+    $ptpHoaDon->ptpDiaChi = $request->ptpDiaChi;
+    $ptpHoaDon->ptpTongGiaTri = $ptpTongGiaTri;  // Lưu giá trị đã được giới hạn
+    $ptpHoaDon->ptpTrangThai = $request->ptpTrangThai;
 
-        // Lưu lại thay đổi vào database
-        $ptpEdit->save();
+    // Lưu vào cơ sở dữ liệu
+    $ptpHoaDon->save();
 
-        // Redirect về trang cần thiết với thông báo thành công
-        return redirect()->route('ptpadmins.ptpListAdmin')->with('message', 'Sửa loại sản phẩm thành công!'.'$id');
-    } else {
-        // Xử lý nếu không tìm thấy bản ghi
-        return redirect()->route('ptpadmins.ptpListAdmin')->with('message', 'Không có bản ghi!');
+    return redirect()->route('ptpadmins.ptphoadon.ptplist')->with('success', 'Thêm hóa đơn thành công!');
+}
+
+#chi tiết
+public function ptpDetail($id)
+{
+    // Truy vấn dữ liệu từ bảng PTP_HOA_DON theo id
+    $ptpHoaDon = PTP_HOA_DON::find($id);
+
+    // Nếu không tìm thấy Hóa Đơn
+    if (!$ptpHoaDon) {
+        return redirect()->route('ptpadmins.ptphoadon.ptplist')
+                         ->with('error', 'Không tìm thấy Hóa đơn.');
     }
+
+    // Lấy danh sách loại Khách Hàng
+    $ptpLoaiKhachHang = PTP_KHACH_HANG::all();
+
+    // Trả về view với dữ liệu Hóa Đơn và Loại Khách Hàng
+    return view('ptpadmins.ptphoadon.ptpdetail', compact('ptpHoaDon', 'ptpLoaiKhachHang'));
 }
 
-public function ptpDeleteAdmin($id)
+
+#edit
+public function ptpEdit($id)
 {
-    $ptpAdmin = PTP_QUAN_TRI::findOrFail($id);
-    $ptpAdmin->delete();
+    // Truy vấn dữ liệu từ bảng ptp_HoaDon theo id
+    $ptpHoaDon = PTP_HOA_DON::find($id);
 
-    return redirect()->route('ptpadmins.ptpListAdmin')->with('message', 'Tài khoản admin đã được xoá thành công!');
+    // Nếu không tìm thấy Hoa Don
+    if (!$ptpHoaDon) {
+        return redirect()->route('ptpadmins.ptphoadon.ptplist')->with('error', 'Không tìm thấy Hóa đơn.');
+    }
+
+    // Lấy danh sách loại Hoa Don
+    $ptpLoaiKhachHang = PTP_KHACH_HANG::all();
+
+    // Trả về view với dữ liệu Hoa Don và loại Hoa Don
+    return view('ptpadmins.ptphoadon.ptpedit', compact('ptpHoaDon', 'ptpLoaiKhachHang'));
 }
+
+public function ptpeditsubmit(Request $request, $id)
+{
+    // Xác thực dữ liệu
+    $request->validate([
+        'ptpMaKhachHang' => 'required|exists:PTP_KHACH_HANG,id',
+        'ptpMaHoaDon' => "required|string|unique:PTP_HOA_DON,ptpMaHoaDon,{$id}",
+        'ptpNgayHoaDon' => 'required|date',
+        'ptpHoTenKhachHang' => 'required|string|max:255',
+        'ptpEmail' => 'nullable|email|max:255',
+        'ptpDienThoai' => 'nullable|string|max:255',
+        'ptpDiaChi' => 'nullable|string|max:255',
+        'ptpTongGiaTri' => 'required|numeric|min:0',
+        'ptpTrangThai' => 'required|boolean',
+    ]);
+
+    // Tìm hóa đơn theo ID
+    $ptpHoaDon = PTP_HOA_DON::find($id);
+
+    // Kiểm tra nếu không tìm thấy
+    if (!$ptpHoaDon) {
+        return redirect()->route('ptpadmins.ptphoadon.ptplist')->with('error', 'Không tìm thấy hóa đơn.');
+    }
+
+    // Giới hạn giá trị ptpTongGiaTri
+    $maxTongGiaTri = 9999999999.99; // Giới hạn giá trị tối đa
+    $ptpTongGiaTri = min($request->ptpTongGiaTri, $maxTongGiaTri);
+
+    // Cập nhật dữ liệu
+    $ptpHoaDon->ptpMaHoaDon = $request->ptpMaHoaDon;
+    $ptpHoaDon->ptpMaKhachHang = $request->ptpMaKhachHang;
+    $ptpHoaDon->ptpNgayHoaDon = $request->ptpNgayHoaDon;
+    $ptpHoaDon->ptpHoTenKhachHang = $request->ptpHoTenKhachHang;
+    $ptpHoaDon->ptpEmail = $request->ptpEmail;
+    $ptpHoaDon->ptpDienThoai = $request->ptpDienThoai;
+    $ptpHoaDon->ptpDiaChi = $request->ptpDiaChi;
+    $ptpHoaDon->ptpTongGiaTri = $ptpTongGiaTri; // Gán giá trị đã được giới hạn
+    $ptpHoaDon->ptpTrangThai = $request->ptpTrangThai;
+
+    // Lưu vào cơ sở dữ liệu
+    $ptpHoaDon->save();
+
+    return redirect()->route('ptpadmins.ptphoadon.ptplist')->with('success', 'Cập nhật hóa đơn thành công!');
+}
+
+#delete
+public function ptpdelete($id)
+{
+    $ptpHoaDon = PTP_HOA_DON::findOrFail($id);
+    $ptpHoaDon->delete();
+    return redirect()->route('ptpadmins.ptphoadon.ptplist')->with('message', 'Hóa đơn đã được xoá thành công!');
+}
+
 
 }

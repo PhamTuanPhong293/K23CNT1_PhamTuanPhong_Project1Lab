@@ -28,17 +28,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($ptpSanPhams as $item)
+                        @forelse ($ptpSanPhams as $key => $item)
                         <tr>
-                            <td class="text-center">{{ $loop->iteration }}</td>
+                            <td>{{$key + 1 }}</td>
                             <td>{{ $item->ptpMaSanPham }}</td>
                             <td>{{ $item->ptpTenSanPham }}</td>
                             <td>{{ $item->ptpHinhAnh }}</td>
                             <td>{{ $item->ptpSoLuong }}</td>
                             <td>{{ $item->ptpDonGia }}</td>
                             <td>{{ $item->ptpTrangThai }}</td>
-                        
+                            
+                            
                             <td class="button-group">
+                                @csrf
                                 <a href="/ptp-admins/ptp-san-pham/ptp-detail/{{$item->id}}" class="btn btn-primary btn-sm text-uppercase fw-bold px-1 py-1"><i class="fa-solid fa-eye"></i></a>
                                 <a href="/ptp-admins/ptp-san-pham/ptp-edit/{{$item->id}}" class="btn btn-warning btn-sm text-uppercase fw-bold px-1 py-1"><i class="fa-solid fa-pen-to-square"></i></a>
                                 <a href="/ptp-admins/ptp-san-pham/ptp-delete/{{$item->id}}" class="btn btn-danger btn-sm text-uppercase fw-bold px-1 py-1" 

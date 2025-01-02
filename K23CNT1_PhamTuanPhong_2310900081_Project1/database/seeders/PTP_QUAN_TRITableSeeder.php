@@ -13,7 +13,7 @@ class PTP_QUAN_TRITableSeeder extends Seeder
      */
     public function run(): void
     {
-        $ptpMatKhau = md5("123456a@");
+        $ptpMatKhau = md5("123456789");
         DB::table('PTP_QUAN_TRI')->insert([
             'ptpTaiKhoan'=>'phongpham@gmail.com',
             'ptpMatKhau'=> $ptpMatKhau,

@@ -67,5 +67,54 @@ class PTP_KHACH_HANGController extends Controller
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi thêm sản phẩm: ' . $e->getMessage());
         }
     }
-     
+    public function ptpedit($id)
+{
+    // Find the customer by ID
+    $ptpkhachHang = PTP_KHACH_HANG::find($id);
+
+    // If customer doesn't exist, redirect with an error message
+    if (!$ptpkhachHang) {
+        return redirect()->route('ptpadmins.ptpkhachhang.ptplist')->with('error', 'Khách hàng không tồn tại.');
+    }
+
+    // Return the view with customer data
+    return view('ptpadmins.ptpkhachhang.ptp-edit', compact('ptpkhachHang'));
+}
+
+#edit submit
+public function ptpeditsubmit(Request $request, $id)
+{
+    // Validate the incoming data
+    $request->validate([
+        'ptpHotenkhachhang' => 'required|string|max:255',
+        'ptpEmail' => 'required|email|max:255',
+        'ptpDienThoai' => 'required|string|max:255',
+        'ptpDiaChi' => 'required|string|max:255',
+        'ptpNgayDK' => 'required|date',
+        'ptpTrangThai' => 'required|boolean',
+    ]);
+
+    // Find the customer by ID
+    $ptpkhachHang = PTP_KHACH_HANG::find($id);
+
+    // If customer doesn't exist, redirect with an error message
+    if (!$ptpkhachHang) {
+        return redirect()->route('ptpadmins.ptpkhachhang.ptplist')->with('error', 'Khách hàng không tồn tại.');
+    }
+
+    // Update the customer with the form data
+    $ptpkhachHang->ptpHotenkhachhang = $request->ptpHotenkhachhang;
+    $ptpkhachHang->ptpEmail = $request->ptpEmail;
+    $ptpkhachHang->ptpDienThoai = $request->ptpDienThoai;
+    $ptpkhachHang->ptpDiaChi = $request->ptpDiaChi;
+    $ptpkhachHang->ptpNgayDK = $request->ptpNgayDK;
+    $ptpkhachHang->ptpTrangThai = $request->ptpTrangThai;
+
+    // Save the updated customer details
+    $ptpkhachHang->save();
+
+    // Redirect back with a success message
+    return redirect()->route('ptpadmins.ptpkhachhang.ptplist')->with('success', 'Khách hàng đã được cập nhật thành công.');
+}
+
 }

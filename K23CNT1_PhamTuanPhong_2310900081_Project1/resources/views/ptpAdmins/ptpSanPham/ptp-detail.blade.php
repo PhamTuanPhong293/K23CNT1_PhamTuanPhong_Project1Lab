@@ -64,6 +64,6 @@
                 </div>
             </div>
         </section>
-        <a href="{{route('ptpadmins.ptpsanpham.ptplist')}}" class="btn btn-primary">Quay về</a>
+        <a href="{{route('ptpAdmins.ptpSanPham.ptp-list')}}" class="btn btn-primary">Quay về</a>
     </div>
 @endsection

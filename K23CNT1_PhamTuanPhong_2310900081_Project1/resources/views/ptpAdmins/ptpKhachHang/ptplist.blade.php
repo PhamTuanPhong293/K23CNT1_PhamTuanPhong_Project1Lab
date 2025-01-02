@@ -1,18 +1,18 @@
 @extends('_layouts.admins._master')
 @section('title', 'Danh sách người dùng')
 @section('content-body')
-    <div class="container my-4">
+    <div class="container border p-3 bg-white">
         @if (session('message'))
-        <div class="alert alert-success" style="font-weight: bold;">
+        <div class="alert alert-success" >
             {{ session('message') }}
         </div>
         @endif
         <div class="row mb-3">
-            <h1>Danh sách người dùng</h1>
+            <h1>Danh sách hoá đơn</h1>
         </div>
-        <a href="{{route('ptpadmins.ptpkhachhang.ptpcreate')}}"><button class="btn btn-success 10px mb-3"><i class="fa-solid fa-plus"></i> Thêm mới</button></a>
-        <div class="row text-center">
-            <table class="table table-bordered">
+        <a href="{{route('ptpadmins.ptpkhachhang.ptpcreate')}}"><button class="btn btn-success "><i class="fa-solid fa-plus"></i> Thêm mới</button></a>
+        <div class="table-container">
+            <table class="table table-bordered table-striped ">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -70,3 +70,45 @@
         </div>
     </div>
 @endsection
+
+<style>
+    .table-container {
+            max-height: 400px; /* Giới hạn chiều cao */
+            overflow-y: auto; /* Bật thanh cuộn dọc */
+            overflow-x: auto; /* Bật thanh cuộn ngang */
+            border: 1px solid #ccc; /* Viền bảng */
+            padding: 10px;
+        }
+    .table {
+    border-collapse: collapse;
+    width: 100%;
+    
+}
+
+.table th, .table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.table th {
+    background-color: #f2f2f2;
+}
+
+.table-bordered {
+    border: 1px solid #dee2e6;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.btn-success, .btn-primary, .btn-danger {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+.rounded-circle {
+    border-radius: 50%;
+}
+</style>

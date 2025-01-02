@@ -2,7 +2,7 @@
     <img src="{{ asset('images/hoctap.jpg') }}" alt="Ảnh">
     <li class="list-group-item active" aria-current="true">Quản trị nội dung</li>
     <li class="list-group-item">
-        <a href="#">Danh sách quản trị</a>
+        <a href="/ptp-admins/ptp-admin">Danh sách quản trị</a>
     </li>
     <li class="list-group-item">
         <a href="/ptp-admins/ptp-loai-san-pham">Loại sản Phẩm</a>
@@ -15,5 +15,8 @@
     </li>
     <li class="list-group-item">
         <a href="/ptp-admins/ptp-hoa-don">Hóa Đơn</a>
+    </li>
+    <li class="list-group-item">
+        <a href="/ptp-admins/ptp-ct-hoa-don">CT Hóa Đơn</a>
     </li>
   </ul>

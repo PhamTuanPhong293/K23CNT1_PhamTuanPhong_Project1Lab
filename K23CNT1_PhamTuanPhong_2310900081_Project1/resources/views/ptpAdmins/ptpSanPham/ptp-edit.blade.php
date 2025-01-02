@@ -66,7 +66,7 @@
                         <div class="col-sm-10">
                             <select name="ptpMaLoai" id="ptpMaLoai" class="form-control">
                                 <option value="">-- Chọn Loại Sản Phẩm --</option>
-                                @foreach ($ptpLoaiSanPhams as $item)
+                                @foreach ($ptpLoaiSanPham as $item)
                                     <option value="{{ $item->ptpMaLoai }}" 
                                         {{ old('ptpMaLoai', $ptpSanPham->ptpMaLoai) == $item->ptpMaLoai ? 'selected' : '' }}>
                                         {{ $item->ptpTenLoai }}
