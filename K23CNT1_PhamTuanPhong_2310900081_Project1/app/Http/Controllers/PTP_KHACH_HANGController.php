@@ -67,22 +67,22 @@ class PTP_KHACH_HANGController extends Controller
             return redirect()->back()->with('error', 'Có lỗi xảy ra khi thêm sản phẩm: ' . $e->getMessage());
         }
     }
-    public function ptpedit($id)
+    public function ptpEdit($id)
 {
     // Find the customer by ID
-    $ptpkhachHang = PTP_KHACH_HANG::find($id);
+    $ptpKhachHang = PTP_KHACH_HANG::find($id);
 
     // If customer doesn't exist, redirect with an error message
-    if (!$ptpkhachHang) {
+    if (!$ptpKhachHang) {
         return redirect()->route('ptpadmins.ptpkhachhang.ptplist')->with('error', 'Khách hàng không tồn tại.');
     }
 
     // Return the view with customer data
-    return view('ptpadmins.ptpkhachhang.ptp-edit', compact('ptpkhachHang'));
+    return view('ptpadmins.ptpkhachhang.ptpedit', compact('ptpKhachHang'));
 }
 
 #edit submit
-public function ptpeditsubmit(Request $request, $id)
+public function ptpEditSubmit(Request $request, $id)
 {
     // Validate the incoming data
     $request->validate([
@@ -95,23 +95,23 @@ public function ptpeditsubmit(Request $request, $id)
     ]);
 
     // Find the customer by ID
-    $ptpkhachHang = PTP_KHACH_HANG::find($id);
+    $ptpKhachHang = PTP_KHACH_HANG::find($id);
 
     // If customer doesn't exist, redirect with an error message
-    if (!$ptpkhachHang) {
+    if (!$ptpKhachHang) {
         return redirect()->route('ptpadmins.ptpkhachhang.ptplist')->with('error', 'Khách hàng không tồn tại.');
     }
 
     // Update the customer with the form data
-    $ptpkhachHang->ptpHotenkhachhang = $request->ptpHotenkhachhang;
-    $ptpkhachHang->ptpEmail = $request->ptpEmail;
-    $ptpkhachHang->ptpDienThoai = $request->ptpDienThoai;
-    $ptpkhachHang->ptpDiaChi = $request->ptpDiaChi;
-    $ptpkhachHang->ptpNgayDK = $request->ptpNgayDK;
-    $ptpkhachHang->ptpTrangThai = $request->ptpTrangThai;
+    $ptpKhachHang->ptpHoTenKhachHang = $request->ptpHoTenKhachHang;
+    $ptpKhachHang->ptpEmail = $request->ptpEmail;
+    $ptpKhachHang->ptpDienThoai = $request->ptpDienThoai;
+    $ptpKhachHang->ptpDiaChi = $request->ptpDiaChi;
+    $ptpKhachHang->ptpNgayDK = $request->ptpNgayDK;
+    $ptpKhachHang->ptpTrangThai = $request->ptpTrangThai;
 
     // Save the updated customer details
-    $ptpkhachHang->save();
+    $ptpKhachHang->save();
 
     // Redirect back with a success message
     return redirect()->route('ptpadmins.ptpkhachhang.ptplist')->with('success', 'Khách hàng đã được cập nhật thành công.');

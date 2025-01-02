@@ -96,17 +96,18 @@ Route::get('ptp-admins/ptp-hoa-don/ptp-delete/{id}',[PTP_HOA_DONController::clas
 //khách hàng
 Route::get('/ptp-admins/ptp-khack-hang', [PTP_KHACH_HANGController::class, 'ptpList'])
                 ->name('ptpadmins.ptpkhachhang.ptplist');
-Route::get('/ptp-admins/ptp-khack-hang/ptpedit/{id}', [PTP_KHACH_HANGController::class, 'ptpedit'])
-                ->name('ptpadmins.ptpkhachhang.ptp-edit');
+Route::get('/ptp-admins/ptp-khack-hang/ptp-edit/{id}', [PTP_KHACH_HANGController::class, 'ptpEdit'])
+                ->name('ptpadmins.ptpkhachhang.ptpedit');
 #edit submit
-Route::post('/ptp-admins/ptp-khack-hang/ptpedit/{id}', [PTP_KHACH_HANGController::class, 'ptpeditsubmit'])
+Route::post('/ptp-admins/ptp-khack-hang/ptp-edit/{id}', [PTP_KHACH_HANGController::class, 'ptpEditSubmit'])
                 ->name('ptpadmins.ptpkhachhang.ptpeditsubmit');
 // Create
 Route::get('/ptp-admins/ptp-khack-hang/ptp-create', [PTP_KHACH_HANGController::class,'ptpCreate'])
                 ->name('ptpadmins.ptpkhachhang.ptpcreate');
 Route::post('/ptp-admins/ptp-khack-hang/ptp-create', [PTP_KHACH_HANGController::class,'ptpCreateSubmit'])
                 ->name('ptpadmins.ptpkhachhang.ptpcreatesubmit');
-
+Route::get('/ptp-admins/ptp-khack-hang/ptp-detail', [PTP_KHACH_HANGController::class,'ptpDetail'])
+                ->name('ptpadmins.ptpkhachhang.ptpdetail');
 //CTHD
 Route::get('/ptp-admins/ptp-ct-hoa-don', [PTP_CT_HOA_DONController::class, 'ptpList'])
 ->name('ptpadmins.ptpcthoadon.ptplist');

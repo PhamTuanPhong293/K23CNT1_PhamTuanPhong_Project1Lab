@@ -1,4 +1,4 @@
-@extends('_layouts.admin.master')
+@extends('_layouts.admins._master')
 @section('title', 'Sửa tài khoản quản trị')
 @section('content-body')
     <div class="container">

@@ -1,74 +1,48 @@
 @extends('_layouts.admins._master')
-@section('title', 'Danh sách người dùng')
+@section('title', 'Danh sách khách hàng')
+
 @section('content-body')
-    <div class="container border p-3 bg-white">
-        @if (session('message'))
-        <div class="alert alert-success" >
-            {{ session('message') }}
-        </div>
-        @endif
-        <div class="row mb-3">
-            <h1>Danh sách hoá đơn</h1>
-        </div>
-        <a href="{{route('ptpadmins.ptpkhachhang.ptpcreate')}}"><button class="btn btn-success "><i class="fa-solid fa-plus"></i> Thêm mới</button></a>
-        <div class="table-container">
-            <table class="table table-bordered table-striped ">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Mã khách hàng</th>
-                        <th>Họ tên khách</th>
-                        <th>Email</th>
-                        <th>Mật khẩu</th>
-                        <th>Điện thoại</th>
-                        <th>Địa chỉ</th>
-                        <th>Ngày đăng ký</th>
-                        <th>Trạng thái</th>
-                        <th>Chức năng</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($ptpKhachHang as $item)
-                        <tr>
-                            <td class="text-center">{{$loop->iteration}}</td>
-                            <td>{{$item->ptpMaKhachHang}}</td>
-                            <td>{{$item->ptpHoTenKhachHang}}</td>
-                            <td>{{$item->ptpEmail}}</td>
-                            <td>{{$item->ptpMatKhau}}</td>
-                            <td>{{$item->ptpDienThoai}}</td>
-                            <td>{{$item->ptpDiaChi}}</td>
-                            <td>{{$item->ptpNgayDangKy}}</td>
-                            <td>{{$item->ptpTrangThai==1?"Hiển thị":"Ẩn"}}</td>
-
-                            <td class="text-center">
-                                <!-- View Button -->
-                                <button class="btn btn-success me-1 rounded-circle" onclick="window.location.href='/ptp-admin/ptp-chi-tiet-san-pham/{{$item->id}}'" title="Xem chi tiết">
-                                    <i class="fa-solid fa-circle-info"></i>
-                                </button>
-
-                                <!-- Edit Button -->
-                                <button class="btn btn-primary me-1 rounded-circle" onclick="window.location.href='/ptp-admin/ptp-chinh-sua-san-pham/{{$item->id}}'" title="Chỉnh sửa">
-                                    <i class="fa-regular fa-pen-to-square"></i>
-                                </button>
-
-                                <!-- Delete Button -->
-                                <form action="{{ route('ptpadmins.ptpsanpham.ptpdelete', $item->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Bạn chắc chắn muốn xoá loại sản phẩm này?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger me-1 rounded-circle" title="Xoá">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-
-                        </tr>
-                    @empty
-
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <h1>Danh sách khách hàng</h1>
+    <a href="{{ route('ptpadmins.ptpkhachhang.ptpcreate') }}" class="btn btn-primary">Thêm mới</a>
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Mã khách hàng</th>
+                <th>Tên khách hàng</th>
+                <th>Địa chỉ</th>
+                <th>Số điện thoại</th>
+                <th>Email</th>
+                <th>Giới tính</th>
+                <th>Ngày sinh</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($ptpKhachHang as $key => $item)
+                <tr>
+                    <td>{{ $key + 1 }}</td>
+                    <td>{{ $item->ptpMaKhachHang }}</td>
+                    <td>{{ $item->ptpTenKhachHang }}</td>
+                    <td>{{ $item->ptpDiaChi }}</td>
+                    <td>{{ $item->ptpSoDien_Thoai }}</td>
+                    <td>{{ $item->ptpEmail }}</td>
+                    <td>{{ $item->ptpGioi_Tinh ? 'Nam' : 'Nữ' }}</td>
+                    <td>{{ $item->ptpNgay_Sinh }}</td>
+                    <td>{{ $item->ptpTrangThai ? 'Kích hoạt' : 'Không kích hoạt' }}</td>
+                    <td>
+                        <a href="{{ route('ptpadmins.ptpkhachhang.ptpedit', $item->id) }}" class="btn btn-warning">Sửa</a>
+                        <form action="{{ route('ptpadmins.ptpkhachhang.ptpdetail', $item->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
 @endsection
 
 <style>

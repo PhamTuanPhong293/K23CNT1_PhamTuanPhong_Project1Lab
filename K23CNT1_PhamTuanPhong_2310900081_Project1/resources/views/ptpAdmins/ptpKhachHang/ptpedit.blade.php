@@ -1,86 +1,54 @@
 @extends('_layouts.admins._master')
-@section('title','Chi Tiết Hóa Đơn')
+@section('title', 'Sửa khách hàng')
+
 @section('content-body')
-    <section class="container">
-        <!-- Form for editing customer data -->
-        <form action="{{ route('ptpadmins.ptpkhachhang.ptpeditsubmit', ['id' => $ptpkhachHang->id]) }}" method="POST">
-            @csrf
-            <div class="card">
-                <div class="card-header">
-                    <h3>Thông tin khách hàng</h3>
-                </div>
-                <div class="card-body">
-                    <!-- Customer ID (Read-only) -->
-                    <div class="mb-3 row">
-                        <label for="ptpMakhachhang" class="col-sm-2 col-form-label">Mã Khách Hàng</label>
-                        <div class="col-sm-10">
-                            <input type="text" readonly class="form-control" id="ptpMakhachhang" name="ptpMakhachhang" value="{{ $ptpkhachHang->ptpMakhachhang }}">
-                        </div>
-                    </div>
-
-                    <!-- Customer Name -->
-                    <div class="mb-3 row">
-                        <label for="ptpHotenkhachhang" class="col-sm-2 col-form-label">Họ Tên Khách Hàng</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="ptpHotenkhachhang" name="ptpHotenkhachhang" value="{{ $ptpkhachHang->ptpHotenkhachhang }}">
-                        </div>
-                    </div>
-
-                    <!-- Email -->
-                    <div class="mb-3 row">
-                        <label for="ptpEmail" class="col-sm-2 col-form-label">Email</label>
-                        <div class="col-sm-10">
-                            <input type="email" class="form-control" id="ptpEmail" name="ptpEmail" value="{{ $ptpkhachHang->ptpEmail }}">
-                        </div>
-                    </div>
-
-                    <!-- Phone -->
-                    <div class="mb-3 row">
-                        <label for="ptpDienThoai" class="col-sm-2 col-form-label">Điện Thoại</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="ptpDienThoai" name="ptpDienThoai" value="{{ $ptpkhachHang->ptpDienThoai }}">
-                        </div>
-                    </div>
-
-                    <!-- Address -->
-                    <div class="mb-3 row">
-                        <label for="ptpDiaChi" class="col-sm-2 col-form-label">Địa Chỉ</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="ptpDiaChi" name="ptpDiaChi" value="{{ $ptpkhachHang->ptpDiaChi }}">
-                        </div>
-                    </div>
-
-                    <!-- Registration Date -->
-                    <div class="mb-3 row">
-                        <label for="ptpNgayDK" class="col-sm-2 col-form-label">Ngày Đăng Ký</label>
-                        <div class="col-sm-10">
-                            <input type="date" class="form-control" id="ptpNgayDK" name="ptpNgayDK" value="{{ $ptpkhachHang->ptpNgayDK }}">
-                        </div>
-                    </div>
-
-                    <!-- Status (Active/Inactive) -->
-                    <div class="mb-3 row">
-                        <label for="ptpTrangThai" class="col-sm-2 col-form-label">Trạng Thái</label>
-                        <div class="col-sm-10">
-                            <div>
-                                <input type="radio" id="ptpTrangThai1" name="ptpTrangThai" value="0" {{ $ptpkhachHang->ptpTrangThai == 0 ? 'checked' : '' }}>
-                                <label for="ptpTrangThai1">Không hoạt động</label>
-                            </div>
-                            <div>
-                                <input type="radio" id="ptpTrangThai2" name="ptpTrangThai" value="1" {{ $ptpkhachHang->ptpTrangThai == 1 ? 'checked' : '' }}>
-                                <label for="ptpTrangThai2">Hoạt động</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-footer">
-                    <!-- Update Button -->
-                    <button class="btn btn-primary mx-2">Cập nhật</button>
-                    <!-- Back Button -->
-                    <a href="{{ route('ptpadmins.ptpkhachhang.ptplist') }}" class="btn btn-secondary">Quay lại</a>
-                </div>
-            </div>
-        </form>
-    </section>
+    <h1>Sửa khách hàng</h1>
+    <form action="{{ route('ptpadmins.ptpkhachhang.ptpeditsubmit', $ptpKhachHang->id) }}" method="POST">
+        @csrf
+        @method('PUT')
+        <div class="mb-3">
+            <label for="ptpMaKhachHang" class="form-label">Mã khách hàng</label>
+            <input type="text" class="form-control" id="ptpMaKhachHang" name="ptpMaKhachHang" value="{{ $ptpKhachHang->ptpMaKhachHang }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="ptpTenKhachHang" class="form-label">Tên khách hàng</label>
+            <input type="text" class="form-control" id="ptpTenKhachHang" name="ptpTenKhachHang" value="{{ $ptpKhachHang->ptpTenKhachHang }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="ptpDiaChi" class="form-label">Địa chỉ</label>
+            <input type="text" class="form-control" id="ptpDiaChi" name="ptpDiaChi" value="{{ $ptpKhachHang->ptpDiaChi }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="ptpSoDienThoai" class="form-label">Số điện thoại</label>
+            <input type="text" class="form-control" id="ptpSoDienThoai" name="ptpSoDienThoai" value="{{ $ptpKhachHang->ptpSoDienThoai }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="ptpEmail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="ptpEmail" name="ptpEmail" value="{{ $ptpKhachHang->ptpEmail }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="ptpGioiTinh" class="form-label">Giới tính</label>
+            <select class="form-control" id="ptpGioiTinh" name="ptpGioiTinh" required>
+                <option value="1" {{ $ptpKhachHang->ptpGioiTinh == 1 ? 'selected' : '' }}>Nam</option>
+                <option value="0" {{ $ptpKhachHang->ptpGioiTinh == 0 ? 'selected' : '' }}>Nữ</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="ptpNgaySinh" class="form-label">Ngày sinh</label>
+            <input type="date" class="form-control" id="ptpNgaySinh" name="ptpNgaySinh" value="{{ $ptpKhachHang->ptpNgaySinh }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="ptpMatKhau" class="form-label">Mật khẩu (để trống nếu không thay đổi)</label>
+            <input type="password" class="form-control" id="ptpMatKhau" name="ptpMatKhau">
+        </div>
+        <div class="mb-3">
+            <label for="ptpTrangThai" class="form-label">Trạng thái</label>
+            <select class="form-control" id="ptpTrangThai" name="ptpTrangThai" required>
+                <option value="1" {{ $ptpKhachHang->ptpTrangThai == 1 ? 'selected' : '' }}>Kích hoạt</option>
+                <option value="0" {{ $ptpKhachHang->ptpTrangThai == 0 ? 'selected' : '' }}>Không kích hoạt</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Cập nhật</button>
+        <a href="{{ route('ptpadmins.ptpkhachhang.ptplist') }}" class="btn btn-secondary">Quay lại</a>
+    </form>
 @endsection
