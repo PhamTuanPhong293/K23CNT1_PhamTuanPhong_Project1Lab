@@ -139,10 +139,22 @@ Route::get('/ptp-admins/ptp-ct-hoa-don/ptp-delete/{id}', [PTP_CT_HOA_DONControll
 //quantriadmin
 Route::get('/ptp-admins/ptp-admin',[ptpAdminController::class, 'ptpList'])
         ->name('ptpadmins.ptpadmin.ptplist');
+
 Route::get('/ptp-admins/ptp-admin/ptp-view/{id}', [ptpAdminController::class, 'ptpView'])
         ->name('ptpadmins.ptpadmin.ptpview');
+
 Route::get('/ptp-admins/ptp-admin/ptp-edit/{id}', [ptpAdminController::class, 'ptpEdit'])
         ->name('ptpadmins.ptpadmin.ptpedit');
-Route::delete('/ptp-admins/ptp-admin/ptp-delete/{id}', [ptpAdminController::class, 'ptpDelete'])
+
+Route::post('/ptp-admins/ptp-admin/ptp-edit', [ptpAdminController::class, 'ptpEditSubmit'])
+        ->name('ptpadmins.ptpadmin.ptpeditsubmit');
+
+Route::get('/ptp-admins/ptp-admin/ptp-delete/{id}', [ptpAdminController::class, 'ptpDelete'])
         ->name('ptpadmins.ptpadmin.ptpdelete');
+
+Route::get('/ptp-admins/ptp-admin/ptp-create/{id}', [ptpAdminController::class, 'ptpCreate'])
+        ->name('ptpadmins.ptpadmin.ptpcreate');
+        
+Route::post('/ptp-admins/ptp-admin/ptp-create', [ptpAdminController::class, 'ptpCreateSubmit'])
+        ->name('ptpadmins.ptpadmin.ptpcreatesubmit');
 
