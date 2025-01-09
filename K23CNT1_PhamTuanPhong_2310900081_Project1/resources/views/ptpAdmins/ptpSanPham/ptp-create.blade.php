@@ -32,7 +32,7 @@
                     <div class="mb-3 row">
                         <label for="ptpHinhAnh" class="col-sm-2 col-form-label">Hình ảnh</label>
                         <div class="col-sm-10">
-                            <input type="file" class="form-control" id="ptpHinhAnh" name="ptpHinhAnh">
+                            <input type="file" class="form-control" id="ptpHinhAnh" name="ptpHinhAnh" accept="image/*">
                             @error('ptpHinhAnh')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -56,21 +56,16 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="mb-3 row">
-                        <label for="ptpMaLoai" class="col-sm-2 col-form-label">Loại danh mục</label>
-                        <div class="col-sm-10">
-                            <select name="ptpMaLoai" id="ptpMaLoai" class="form-control">
-                                <option value="">-- Chọn Loại Sản Phẩm --</option>
-                                @foreach ($ptpLoaiSanPham as $item)
-                                    <option value="{{ $item->ptpMaLoai }}" {{ old('ptpMaLoai') == $item->ptpMaLoai ? 'selected' : '' }}>
-                                        {{ $item->ptpTenLoai }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('ptpMaLoai')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
+                    <div class="mb-3">
+                        <label for="ptpMaLoai" class="form-label">Loại Danh Mục</label>
+                        <select name="ptpMaLoai" id="ptpMaLoai" class="form-control">
+                            @foreach ($ptpLoaiSanPham as $item)
+                                <option value="{{ $item->id }}">{{ $item->ptpTenLoai }}</option>
+                            @endforeach
+                        </select>
+                        @error('ptpMaLoai')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="mb-3 row">
                         <label for="ptpTrangThai" class="col-sm-2 col-form-label">Trạng Thái</label>

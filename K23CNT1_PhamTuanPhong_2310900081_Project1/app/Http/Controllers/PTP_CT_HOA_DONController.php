@@ -4,17 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Models\PTP_CT_HOA_DON;
 use App\Models\PTP_HOA_DON;
+use App\Models\PTP_KHACH_HANG;
 use App\Models\PTP_SAN_PHAM;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class PTP_CT_HOA_DONController extends Controller
 {
     public function ptpList()
     {
-        $ptpCTHoaDon = PTP_HOA_DON::all();  // Get all CTHoaDon records
-        return view('ptpadmins.ptpcthoadon.ptplist', compact('ptpCTHoaDon'));
+        $ptpcthoadons = PTP_CT_HOA_DON::all();
+        return view('ptpadmins.ptpcthoadon.ptplist',['ptpcthoadons'=>$ptpcthoadons]);
     }
     
+    public function show($sanPhamId)
+{
+    $sanPham = PTP_SAN_PHAM::find($sanPhamId);
+
+    // Lấy Mã Khách Hàng từ session
+    $userId = Session::get('ptpMaKhachHang');
+
+    // Kiểm tra khách hàng tồn tại trong hệ thống
+    $khachHang = PTP_KHACH_HANG::find($userId);
+
+    // Truyền thông tin qua view
+    return view('', [
+        'sanPham' => $sanPham,
+        'khachHang' => $khachHang, // Truyền thông tin khách hàng vào view
+    ]);
+}
     #insert
     public function ptpCreate()
     {
@@ -37,7 +55,7 @@ class PTP_CT_HOA_DONController extends Controller
             'ptpSanPhamID' => 'required|exists:PTP_SAN_PHAM,id',
             'ptpSoLuongMua' => 'required',
             'ptpDonGiaMua' => 'required|numeric|min:0|max:9999999999.99',
-            'ptpThanhTien' => 'nullable',
+            'ptpThaptpien' => 'nullable',
             'ptpTrangThai' => 'required|boolean',
         ]);
     
@@ -47,7 +65,7 @@ class PTP_CT_HOA_DONController extends Controller
         $CThoaDon->ptpSanPhamID = $request->ptpSanPhamID;
         $CThoaDon->ptpSoLuongMua = $request->ptpSoLuongMua;
         $CThoaDon->ptpDonGiaMua = $request->ptpDonGiaMua;
-        $CThoaDon->ptpThanhTien = $request->ptpThanhTien;
+        $CThoaDon->ptpThaptpien = $request->ptpThaptpien;
         $CThoaDon->ptpTrangThai = $request->ptpTrangThai;
     
         // Lưu vào cơ sở dữ liệu
@@ -104,7 +122,7 @@ class PTP_CT_HOA_DONController extends Controller
             'ptpSanPhamID' => 'required|exists:PTP_SAN_PHAM,id',
             'ptpSoLuongMua' => 'required|integer|min:1',
             'ptpDonGiaMua' => 'required|numeric|min:0|max:9999999999.99',
-            'ptpThanhTien' => 'nullable|numeric|min:0|max:9999999999.99',
+            'ptpThaptpien' => 'nullable|numeric|min:0|max:9999999999.99',
             'ptpTrangThai' => 'required|boolean',
         ]);
     
@@ -121,7 +139,7 @@ class PTP_CT_HOA_DONController extends Controller
         $ptpCTHoaDon->ptpSanPhamID = $request->ptpSanPhamID;
         $ptpCTHoaDon->ptpSoLuongMua = $request->ptpSoLuongMua;
         $ptpCTHoaDon->ptpDonGiaMua = $request->ptpDonGiaMua;
-        $ptpCTHoaDon->ptpThanhTien = $request->ptpThanhTien ?? $ptpCTHoaDon->ptpSoLuongMua * $ptpCTHoaDon->ptpDonGiaMua;
+        $ptpCTHoaDon->ptpThaptpien = $request->ptpThaptpien ?? $ptpCTHoaDon->ptpSoLuongMua * $ptpCTHoaDon->ptpDonGiaMua;
         $ptpCTHoaDon->ptpTrangThai = $request->ptpTrangThai;
     
         // Lưu vào cơ sở dữ liệu

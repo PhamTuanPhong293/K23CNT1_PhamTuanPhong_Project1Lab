@@ -32,14 +32,15 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="mb-3 row">
-                        <label for="ptpHinhAnh" class="col-sm-2 col-form-label">Hình ảnh</label>
-                        <div class="col-sm-10">
-                            <input type="file" class="form-control" id="ptpHinhAnh" name="ptpHinhAnh">
-                            @error('ptpHinhAnh')
-                                <span class="text-danger">{{ $message }}</span>  
-                            @enderror
-                        </div>
+                    <div class="mb-3">
+                        <label for="ptpHinhAnh" class="form-label">Hình ảnh</label>
+                        <input type="file" name="ptpHinhAnh" class="form-control">
+                        @if($ptpSanPham->ptpHinhAnh)
+                            <img src="{{ asset('storage/' . $ptpSanPham->ptpHinhAnh) }}" alt="Sản phẩm {{ $ptpSanPham->ptpMaSanPham }}" width="200" class="mt-2">
+                        @endif
+                        @error('ptpHinhAnh')
+                            <div class="alert alert-danger mt-2">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 row">
                         <label for="ptpSoLuong" class="col-sm-2 col-form-label">Số lượng</label>
@@ -61,22 +62,19 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="mb-3 row">
-                        <label for="ptpMaLoai" class="col-sm-2 col-form-label">Loại danh mục</label>
-                        <div class="col-sm-10">
-                            <select name="ptpMaLoai" id="ptpMaLoai" class="form-control">
-                                <option value="">-- Chọn Loại Sản Phẩm --</option>
-                                @foreach ($ptpLoaiSanPham as $item)
-                                    <option value="{{ $item->ptpMaLoai }}" 
-                                        {{ old('ptpMaLoai', $ptpSanPham->ptpMaLoai) == $item->ptpMaLoai ? 'selected' : '' }}>
-                                        {{ $item->ptpTenLoai }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('ptpMaLoai')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
+                    <div class="mb-3">
+                        <label for="ptpMaLoai" class="form-label">Loại Danh Muc</label>
+                        <select name="ptpMaLoai" id="ptpMaLoai" class="form-control">
+                            @foreach ($ptpLoaiSanPham as $item)
+                                <option value="{{ $item->id }}" 
+                                    {{ old('ptpMaLoai', $ptpSanPham->ptpMaLoai) == $item->id ? 'selected' : '' }}>
+                                    {{ $item->ptpTenLoai }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('ptpMaLoai')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                     
                     <div class="mb-3 row">

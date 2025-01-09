@@ -7,6 +7,7 @@ use App\Models\PTP_SAN_PHAM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class PTP_SAN_PHAMController extends Controller
 {
@@ -23,36 +24,58 @@ class PTP_SAN_PHAMController extends Controller
     
     
         $ptpLoaiSanPham = PTP_LOAI_SAN_PHAM::all();
-        return view('ptpAdmins.ptpSanPham.ptp-create', compact('ptpLoaiSanPham'));
+        return view('ptpAdmins.ptpSanPham.ptp-create',['ptpLoaiSanPham'=>$ptpLoaiSanPham]);
     
 }
 
 public function ptpCreateSubmit(Request $request)
 {
+
+    // Validate input
     $validatedData = $request->validate([
-        'ptpMaSanPham' => 'required|string|unique:PTP_SAN_PHAM,ptpMaSanPham|max:255',
+        'ptpMaSanPham' => 'required|unique:ptp_SAN_PHAM,ptpMaSanPham',
         'ptpTenSanPham' => 'required|string|max:255',
-        'ptpHinhAnh' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        'ptpSoLuong' => 'required|integer|min:0',
-        'ptpDonGia' => 'required|numeric|min:0',
-        'ptpMaLoai' => 'required|integer|exists:PTP_LOAI_SAN_PHAM,id',
-        'ptpTrangThai' => 'required|boolean',
+        'ptpHinhAnh' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10240', // Kiểm tra hình ảnh và loại định dạng
+        'ptpSoLuong' => 'required|numeric|min:1',
+        'ptpDonGia' => 'required|numeric',
+        'ptpMaLoai' => 'required|exists:ptp_LOAI_SAN_PHAM,id',
+        'ptpTrangThai' => 'required|in:0,1',
     ]);
 
-    // Handle file upload
+    // Khởi tạo đối tượng ptp_SAN_PHAM và lưu thông tin vào cơ sở dữ liệu
+    $ptpsanpham = new ptp_SAN_PHAM;
+    $ptpsanpham->ptpMaSanPham = $request->ptpMaSanPham;
+    $ptpsanpham->ptpTenSanPham = $request->ptpTenSanPham;
+
+    // Kiểm tra nếu có tệp hình ảnh
     if ($request->hasFile('ptpHinhAnh')) {
+        // Lấy tệp hình ảnh
         $file = $request->file('ptpHinhAnh');
-        $filename = time() . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('images'), $filename);
-        $validatedData['ptpHinhAnh'] = $filename;
+
+        // Kiểm tra nếu tệp hợp lệ
+        if ($file->isValid()) {
+            // Tạo tên tệp dựa trên mã sản phẩm
+            $fileName = $request->ptpMaSanPham . '.' . $file->extension();
+
+            // Lưu tệp vào thư mục public/img/san_pham
+            $file->storeAs('public/img/san_pham', $fileName); // Lưu tệp vào thư mục storage/app/public/img/san_pham
+
+            // Lưu đường dẫn vào cơ sở dữ liệu
+            $ptpsanpham->ptpHinhAnh = 'img/san_pham/' . $fileName; // Lưu đường dẫn tương đối trong CSDL
+        }
     }
 
-    // Save data to the database
-    PTP_SAN_PHAM::create($validatedData);
+    // Lưu các thông tin còn lại vào cơ sở dữ liệu
+    $ptpsanpham->ptpSoLuong = $request->ptpSoLuong;
+    $ptpsanpham->ptpDonGia = $request->ptpDonGia;
+    $ptpsanpham->ptpMaLoai = $request->ptpMaLoai;
+    $ptpsanpham->ptpTrangThai = $request->ptpTrangThai;
 
-    // Redirect back with a success message
-    return redirect()->route('ptpAdmins.ptpSanPham.ptp-list')
-        ->with('success', 'Sản phẩm đã được thêm thành công.');
+    // Lưu dữ liệu vào cơ sở dữ liệu
+    $ptpsanpham->save();
+
+    // Chuyển hướng người dùng về trang danh sách sản phẩm
+    return redirect()->route('ptpadmins.ptpsanpham.ptplist');
 }
 
 
@@ -74,54 +97,47 @@ public function ptpEdit($id)
 // Cập nhật sản phẩm
 public function ptpEditSubmit(Request $request, $id)
 {
+    // Validate dữ liệu
     $request->validate([
-        'ptpMaSanPham' => 'required|string|unique:PTP_SAN_PHAM,ptpMaSanPham,' . $id,
-        'ptpTenSanPham' => 'required|string',
+        'ptpMaSanPham' => 'required|max:20',
+        'ptpTenSanPham' => 'required|max:255',
         'ptpHinhAnh' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         'ptpSoLuong' => 'required|integer',
         'ptpDonGia' => 'required|numeric',
-        'ptpMaLoai' => 'required|string',
-        'ptpTrangThai' => 'required|boolean',
+        'ptpMaLoai' => 'required|max:10',
+        'ptpTrangThai' => 'required|in:0,1',
     ]);
 
-    $ptpSanPham = PTP_SAN_PHAM::findOrFail($id);
-    
-    // Lấy dữ liệu từ request
-    $data = $request->only([
-        'ptpMaSanPham', 
-        'ptpTenSanPham', 
-        'ptpSoLuong', 
-        'ptpDonGia', 
-        'ptpMaLoai', 
-        'ptpTrangThai'
-    ]);
+    // Tìm sản phẩm cần chỉnh sửa
+    $ptpSanPham = ptp_SAN_PHAM::findOrFail($id);
 
+    // Cập nhật thông tin sản phẩm
+    $ptpSanPham->ptpMaSanPham = $request->ptpMaSanPham;
+    $ptpSanPham->ptpTenSanPham = $request->ptpTenSanPham;
+    $ptpSanPham->ptpSoLuong = $request->ptpSoLuong;
+    $ptpSanPham->ptpDonGia = $request->ptpDonGia; 
+    $ptpSanPham->ptpMaLoai = $request->ptpMaLoai;
+    $ptpSanPham->ptpTrangThai = $request->ptpTrangThai;
+
+    // Kiểm tra nếu có hình ảnh mới
     if ($request->hasFile('ptpHinhAnh')) {
-        // Xóa ảnh cũ nếu tồn tại
-        if ($ptpSanPham->ptpHinhAnh && file_exists(public_path('images/' . $ptpSanPham->ptpHinhAnh))) {
-            unlink(public_path('images/' . $ptpSanPham->ptpHinhAnh));
+        // Kiểm tra và xóa hình ảnh cũ nếu tồn tại
+        if ($ptpSanPham->ptpHinhAnh && Storage::disk('public')->exists('img/san_pham/' . $ptpSanPham->ptpHinhAnh)) {
+            // Xóa file cũ nếu tồn tại
+            Storage::disk('public')->delete('img/san_pham/' . $ptpSanPham->ptpHinhAnh);
         }
-
-        // Upload ảnh mới
-        $file = $request->file('ptpHinhAnh');
-        $filename = time() . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('images'), $filename);
-        $data['ptpHinhAnh'] = $filename;
-    }
-    
-
-    // Cập nhật sản phẩm
-    try {
-        $ptpSanPham->update($data);
-    } catch (\Exception $e) {
-        return back()->withErrors(['error' => $e->getMessage()]);
+        // Lưu hình ảnh mới
+        $imagePath = $request->file('ptpHinhAnh')->store('img/san_pham', 'public');
+        $ptpSanPham->ptpHinhAnh = $imagePath;
     }
 
+    // Lưu thông tin sản phẩm đã chỉnh sửa
+    $ptpSanPham->save();
 
-    // Điều hướng với thông báo
-    return redirect()->route('ptpAdmins.ptpSanPham.ptp-list')
-        ->with('success', 'Cập nhật sản phẩm thành công!');
+    // Redirect về trang danh sách sản phẩm
+    return redirect()->route('ptpadmins.ptpsanpham.ptplist')->with('success', 'Sản phẩm đã được cập nhật thành công.');
 }
+
 
     public function ptpDetail($id)
     {

@@ -28,15 +28,30 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($ptpSanPhams as $key => $item)
+                        @php
+                        $stt = 0;
+                    @endphp
+                    @forelse ($ptpSanPhams as $item)
+                        @php
+                            $stt++;
+                        @endphp
                         <tr>
-                            <td>{{$key + 1 }}</td>
+                            <td>{{ $stt }}</td>
                             <td>{{ $item->ptpMaSanPham }}</td>
                             <td>{{ $item->ptpTenSanPham }}</td>
-                            <td>{{ $item->ptpHinhAnh }}</td>
+                            <td >
+                                <img src="{{ asset('storage/' . $item->ptpHinhAnh) }}" alt="Sản phẩm {{ $item->ptpMaSanPham }}" width="100" height="100">
+                            </td>
                             <td>{{ $item->ptpSoLuong }}</td>
-                            <td>{{ $item->ptpDonGia }}</td>
-                            <td>{{ $item->ptpTrangThai }}</td>
+                            <td>{{ number_format($item->ptpDonGia, 0, ',', '.') }} VND</td>
+                            <td>{{ $item->ptpMaLoai }}</td>
+                            <td>
+                                @if($item->ptpTrangThai == 0)
+                                    <span class="badge bg-success">Hiển Thị</span>
+                                @else
+                                    <span class="badge bg-danger">Khóa</span> 
+                                @endif 
+                            </td>
                             
                             
                             <td class="button-group">

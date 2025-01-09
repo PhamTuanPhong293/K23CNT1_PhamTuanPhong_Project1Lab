@@ -98,7 +98,6 @@ Route::get('/ptp-admins/ptp-khack-hang', [PTP_KHACH_HANGController::class, 'ptpL
                 ->name('ptpadmins.ptpkhachhang.ptplist');
 Route::get('/ptp-admins/ptp-khack-hang/ptp-edit/{id}', [PTP_KHACH_HANGController::class, 'ptpEdit'])
                 ->name('ptpadmins.ptpkhachhang.ptpedit');
-#edit submit
 Route::post('/ptp-admins/ptp-khack-hang/ptp-edit/{id}', [PTP_KHACH_HANGController::class, 'ptpEditSubmit'])
                 ->name('ptpadmins.ptpkhachhang.ptpeditsubmit');
 // Create

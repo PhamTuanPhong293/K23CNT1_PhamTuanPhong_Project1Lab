@@ -12,9 +12,19 @@ class PTP_HOA_DONController extends Controller
     //
     public function ptpList(){
         $ptpHoaDon = PTP_HOA_DON::all();
-        return view("ptpadmins.ptphoadon.ptplist", compact("ptpHoaDon"));
+        return view("ptpadmins.ptphoadon.ptplist", ['ptphoadon'=>$ptpHoaDon]);
     }
     
+
+    public function show($hoaDonId,$sanPhamId)
+    {
+        // Lấy hóa đơn từ ID
+        $hoaDon = PTP_HOA_DON::findOrFail($hoaDonId);
+        $sanPham = PTP_HOA_DON::findOrFail($sanPhamId);
+
+        // Trả về view để hiển thị thông tin hóa đơn
+        return view('', compact('hoaDon','sanPham'));
+    }
 
 #insert
 public function ptpcreate()
@@ -27,39 +37,45 @@ public function ptpcreate()
 #insert submit
 public function ptpcreatesubmit(Request $request)
 {
-    // Xác thực dữ liệu
-    $request->validate([
-        'ptpMakhachhang' => 'required|exists:PTP_KHACH_HANG,id',
-        'ptpMaHoaDon' => 'required|string|unique:PTP_HOA_DON,ptpMaHoaDon',
-        'ptpNgayHoaDon' => 'required|date',
-        'ptpHotenKhachHang' => 'required|string|max:255',
-        'ptpEmail' => 'nullable|email|max:255',
-        'ptpDienThoai' => 'nullable|string|max:255',
-        'ptpDiaChi' => 'nullable|string|max:255',
-        'ptpTongGiaTri' => 'required|numeric|min:0',
-        'ptpTrangThai' => 'required|boolean',
+    // Xác thực dữ liệu yêu cầu dựa trên các quy tắc xác thực
+    $validate = $request->validate([
+        'ptpMaHoaDon' => 'required|unique:PTP_HOA_DON,ptpMaHoaDon',
+        'ptpMaKhachHang' => 'required|exists:PTP_KHACH_HANG,id',
+        'ptpNgayHoaDon' => 'required|date',  
+        'ptpNgayNhan' => 'required|date',
+        'ptpHoTenKhachHang' => 'required|string',  
+        'ptpEmail' => 'required|email',
+        'ptpDienThoai' => 'required|numeric',  
+        'ptpDiaChi' => 'required|string',  
+        'ptpTongGiaTri' => 'required|numeric',  // Đã thay đổi thành numeric (cho kiểu double)
+        'ptpTrangThai' => 'required|in:0,1,2',
     ]);
 
-    // Giới hạn giá trị ptpTongGiaTri (ví dụ giới hạn tối đa là 99999999999999.99)
-    $maxTongGiaTri = 99999999999999.99;  // Giới hạn giá trị tối đa
-    $ptpTongGiaTri = min($request->ptpTongGiaTri, $maxTongGiaTri);  // Giới hạn giá trị nếu vượt quá
+    // Tạo một bản ghi hóa đơn mới
+    $ptphoadon = new PTP_HOA_DON;
 
-    // Tạo hóa đơn mới
-    $ptpHoaDon = new PTP_HOA_DON();
-    $ptpHoaDon->ptpMaHoaDon = $request->ptpMaHoaDon;
-    $ptpHoaDon->ptpMakhachhang = $request->ptpMaKhachHang;
-    $ptpHoaDon->ptpNgayHoaDon = $request->ptpNgayHoaDon;
-    $ptpHoaDon->ptpHoTenKhachHang = $request->ptpHoTenKhachHang;
-    $ptpHoaDon->ptpEmail = $request->ptpEmail;
-    $ptpHoaDon->ptpDienThoai = $request->ptpDienThoai;
-    $ptpHoaDon->ptpDiaChi = $request->ptpDiaChi;
-    $ptpHoaDon->ptpTongGiaTri = $ptpTongGiaTri;  // Lưu giá trị đã được giới hạn
-    $ptpHoaDon->ptpTrangThai = $request->ptpTrangThai;
+    // Gán dữ liệu xác thực vào các thuộc tính của mô hình
+    $ptphoadon->ptpMaHoaDon = $request->ptpMaHoaDon;
+    $ptphoadon->ptpMaKhachHang = $request->ptpMaKhachHang;  // Giả sử đây là khóa ngoại
+    $ptphoadon->ptpHoTenKhachHang = $request->ptpHoTenKhachHang;
+    $ptphoadon->ptpEmail = $request->ptpEmail;
+    $ptphoadon->ptpDienThoai = $request->ptpDienThoai;
+    $ptphoadon->ptpDiaChi = $request->ptpDiaChi;
+    
+    // Lưu 'ptpTongGiaTri' dưới dạng float (hoặc double) để phù hợp với kiểu dữ liệu trong cơ sở dữ liệu
+    $ptphoadon->ptpTongGiaTri = (double) $request->ptpTongGiaTri; // Chuyển đổi sang double
+    
+    $ptphoadon->ptpTrangThai = $request->ptpTrangThai;
 
-    // Lưu vào cơ sở dữ liệu
-    $ptpHoaDon->save();
+    // Đảm bảo định dạng đúng cho các trường ngày
+    $ptphoadon->ptpNgayHoaDon = $request->ptpNgayHoaDon;
+    $ptphoadon->ptpNgayNhan = $request->ptpNgayNhan;
 
-    return redirect()->route('ptpadmins.ptphoadon.ptplist')->with('success', 'Thêm hóa đơn thành công!');
+    // Lưu bản ghi mới vào cơ sở dữ liệu
+    $ptphoadon->save();
+
+    // Chuyển hướng đến danh sách hóa đơn
+    return redirect()->route('ptpadmins.ptphoadon.ptplist');
 }
 
 #chi tiết
@@ -85,63 +101,50 @@ public function ptpDetail($id)
 #edit
 public function ptpEdit($id)
 {
-    // Truy vấn dữ liệu từ bảng ptp_HoaDon theo id
-    $ptpHoaDon = PTP_HOA_DON::find($id);
-
-    // Nếu không tìm thấy Hoa Don
-    if (!$ptpHoaDon) {
-        return redirect()->route('ptpadmins.ptphoadon.ptplist')->with('error', 'Không tìm thấy Hóa đơn.');
-    }
-
-    // Lấy danh sách loại Hoa Don
-    $ptpLoaiKhachHang = PTP_KHACH_HANG::all();
-
-    // Trả về view với dữ liệu Hoa Don và loại Hoa Don
-    return view('ptpadmins.ptphoadon.ptpedit', compact('ptpHoaDon', 'ptpLoaiKhachHang'));
+    $ptphoadon = PTP_HOA_DON::where('id', $id)->first();
+    $ptpkhachhang = PTP_KHACH_HANG::all();
+    return view('ptpadmins.ptphoadon.ptpedit',['ptpkhachhang'=>$ptpkhachhang,'ptphoadon'=>$ptphoadon]);
 }
 
 public function ptpeditsubmit(Request $request, $id)
 {
-    // Xác thực dữ liệu
-    $request->validate([
+    // Xác thực dữ liệu yêu cầu dựa trên các quy tắc xác thực
+    $validate = $request->validate([
+        'ptpMaHoaDon' => 'required|unique:PTP_HOA_DON,ptpMaHoaDon,'. $id,
         'ptpMaKhachHang' => 'required|exists:PTP_KHACH_HANG,id',
-        'ptpMaHoaDon' => "required|string|unique:PTP_HOA_DON,ptpMaHoaDon,{$id}",
-        'ptpNgayHoaDon' => 'required|date',
-        'ptpHoTenKhachHang' => 'required|string|max:255',
-        'ptpEmail' => 'nullable|email|max:255',
-        'ptpDienThoai' => 'nullable|string|max:255',
-        'ptpDiaChi' => 'nullable|string|max:255',
-        'ptpTongGiaTri' => 'required|numeric|min:0',
-        'ptpTrangThai' => 'required|boolean',
+        'ptpNgayHoaDon' => 'required|date',  
+        'ptpNgayNhan' => 'required|date',
+        'ptpHoTenKhachHang' => 'required|string',  
+        'ptpEmail' => 'required|email',
+        'ptpDienThoai' => 'required|numeric',  
+        'ptpDiaChi' => 'required|string',  
+        'ptpTongGiaTri' => 'required|numeric', 
+        'ptpTrangThai' => 'required|in:0,1,2',
     ]);
 
-    // Tìm hóa đơn theo ID
-    $ptpHoaDon = PTP_HOA_DON::find($id);
+    $ptphoadon = PTP_HOA_DON::where('id', $id)->first();
+    // Gán dữ liệu xác thực vào các thuộc tính của mô hình
+    $ptphoadon->ptpMaHoaDon = $request->ptpMaHoaDon;
+    $ptphoadon->ptpMaKhachHang = $request->ptpMaKhachHang;  // Giả sử đây là khóa ngoại
+    $ptphoadon->ptpHoTenKhachHang = $request->ptpHoTenKhachHang;
+    $ptphoadon->ptpEmail = $request->ptpEmail;
+    $ptphoadon->ptpDienThoai = $request->ptpDienThoai;
+    $ptphoadon->ptpDiaChi = $request->ptpDiaChi;
+    
+    // Lưu 'ptpTongGiaTri' dưới dạng float (hoặc double) để phù hợp với kiểu dữ liệu trong cơ sở dữ liệu
+    $ptphoadon->ptpTongGiaTri = (double) $request->ptpTongGiaTri; // Chuyển đổi sang double
+    
+    $ptphoadon->ptpTrangThai = $request->ptpTrangThai;
 
-    // Kiểm tra nếu không tìm thấy
-    if (!$ptpHoaDon) {
-        return redirect()->route('ptpadmins.ptphoadon.ptplist')->with('error', 'Không tìm thấy hóa đơn.');
-    }
+    // Đảm bảo định dạng đúng cho các trường ngày
+    $ptphoadon->ptpNgayHoaDon = $request->ptpNgayHoaDon;
+    $ptphoadon->ptpNgayNhan = $request->ptpNgayNhan;
 
-    // Giới hạn giá trị ptpTongGiaTri
-    $maxTongGiaTri = 9999999999.99; // Giới hạn giá trị tối đa
-    $ptpTongGiaTri = min($request->ptpTongGiaTri, $maxTongGiaTri);
+    // Lưu bản ghi mới vào cơ sở dữ liệu
+    $ptphoadon->save();
 
-    // Cập nhật dữ liệu
-    $ptpHoaDon->ptpMaHoaDon = $request->ptpMaHoaDon;
-    $ptpHoaDon->ptpMaKhachHang = $request->ptpMaKhachHang;
-    $ptpHoaDon->ptpNgayHoaDon = $request->ptpNgayHoaDon;
-    $ptpHoaDon->ptpHoTenKhachHang = $request->ptpHoTenKhachHang;
-    $ptpHoaDon->ptpEmail = $request->ptpEmail;
-    $ptpHoaDon->ptpDienThoai = $request->ptpDienThoai;
-    $ptpHoaDon->ptpDiaChi = $request->ptpDiaChi;
-    $ptpHoaDon->ptpTongGiaTri = $ptpTongGiaTri; // Gán giá trị đã được giới hạn
-    $ptpHoaDon->ptpTrangThai = $request->ptpTrangThai;
-
-    // Lưu vào cơ sở dữ liệu
-    $ptpHoaDon->save();
-
-    return redirect()->route('ptpadmins.ptphoadon.ptplist')->with('success', 'Cập nhật hóa đơn thành công!');
+    // Chuyển hướng đến danh sách hóa đơn
+    return redirect()->route('ptpadmins.ptphoadon.ptplist');
 }
 
 #delete

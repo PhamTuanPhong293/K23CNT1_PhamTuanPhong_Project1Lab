@@ -17,14 +17,34 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($ptpHoaDon as $key => $item)
+            @php
+            $stt = 0;
+        @endphp
+        @forelse ($ptphoadon as $item)
+            @php
+                $stt++;
+            @endphp
                 <tr>
-                    <td>{{ $key + 1 }}</td>
+                    <td>{{ $stt }}</td>
                     <td>{{ $item->ptpMaHoaDon }}</td>
-                    <td>{{ $item->khachHang ? $item->khachHang->ptpTenKhachHang : 'Không xác định' }}</td>
-                    <td>{{ $item->ptpNgayLap }}</td>
-                    <td>{{ $item->ptpTongTien }}</td>
-                    <td>{{ $item->ptpTrangThai ? 'Kích hoạt' : 'Không kích hoạt' }}</td>
+                    <td>{{ $item->ptpMaKhachHang }}</td>
+                    <td>{{ $item->ptpNgayHoaDon }}</td>
+                    <td>{{ $item->ptpNgayNhan }}</td>
+                    <td>{{ $item->ptpHoTenKhachHang }}</td>
+                    <td>{{ $item->ptpEmail }}</td>
+                    <td>{{ $item->ptpDienThoai }}</td>
+                    <td>{{ $item->ptpDiaChi }}</td>
+                    <td>{{ number_format($item->ptpTongGiaTri, 0, ',', '.') }} VND</td>
+                    
+                    <td>
+                        @if($item->ptpTrangThai == 0)
+                            <span class="badge bg-primary">Chờ Sử Lý</span>
+                        @elseif($item->ptpTrangThai == 1)
+                            <span class="badge bg-warning">Đang Sử Lý</span>
+                        @else
+                            <span class="badge bg-success">Đã Hoàn Thành</span>
+                        @endif
+                    </td>
                     <td>
                         <a href="{{ route('ptpadmins.ptphoadon.ptpdetail', $item->id) }}" class="btn btn-success">Xem</a>
                         <a href="{{ route('ptpadmins.ptphoadon.ptp-edit', $item->id) }}" class="btn btn-warning">Sửa</a>

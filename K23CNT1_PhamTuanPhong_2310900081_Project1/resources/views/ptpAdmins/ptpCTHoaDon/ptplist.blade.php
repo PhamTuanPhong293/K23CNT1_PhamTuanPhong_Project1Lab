@@ -13,8 +13,14 @@
         </div>
         @endif
 
-        <div class="row mb-3">
-            <h1>Danh sách hóa đơn chi tiết</h1>
+        <div class="row mb-4">
+            <div class="col-12 d-flex justify-content-between align-items-center">
+                <h1>Danh Sách Chi Tiết Hóa Đơn</h1>
+                <!-- Nút Thêm Mới -->
+                <a href="/ptp-admins/ptp-ct-hoa-don/ptp-create" class="btn btn-success btn-lg">
+                    <i class="fa-solid fa-plus-circle"></i> Thêm Mới
+                </a>
+            </div>
         </div>
 
         <div class="table-responsive">
@@ -32,28 +38,29 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($ptpCTHoaDon as $item)
+                    @php
+                        $stt = 0;
+                    @endphp
+                    @forelse ($ptpcthoadons as $item)
+                        @php
+                            $stt++;
+                        @endphp
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $stt }}</td>
                             <td>{{ $item->ptpHoaDonID }}</td>
                             <td>{{ $item->ptpSanPhamID }}</td>
                             <td>{{ $item->ptpSoLuongMua }}</td>
-                            <td>{{ number_format($item->ptpDonGiaMua, 0, ',', '.') }} VND</td>
-                            <td>{{ number_format($item->ptpThanhTien, 0, ',', '.') }} VND</td>
+                            <td>{{ $item->ptpDonGiaMua }}</td>
+                            <td>{{ $item->ptpThaptpien }}</td>
+                        
                             <td>
-                                @switch($item->ptpTrangThai)
-                                    @case(0)
-                                        Chờ xử lý
-                                        @break
-                                    @case(1)
-                                        Đang xử lý
-                                        @break
-                                    @case(2)
-                                        Đã hoàn thành
-                                        @break
-                                    @default
-                                        Không xác định
-                                @endswitch
+                                @if($item->ptpTrangThai == 0)
+                                    <span class="badge bg-primary">Hoàn Thành</span>
+                                @elseif($item->ptpTrangThai == 1)
+                                    <span class="badge bg-success">Trả Lại</span>
+                                @else
+                                    <span class="badge bg-danger">Xóa</span>
+                                @endif
                             </td>
                             <td>
                                 <a href="{{ route('ptpadmins.ptpcthoadon.ptpdetail', ['id' => $item->id]) }}" class="btn btn-primary">Xem</a>
@@ -63,7 +70,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center">Chưa có hóa đơn chi tiết nào</td>
+                            <td colspan="5" class="text-center">Chưa có hóa đơn chi tiết nào</td>
                         </tr>
                     @endforelse
                 </tbody>

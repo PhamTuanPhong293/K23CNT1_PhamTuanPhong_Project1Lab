@@ -18,103 +18,84 @@ class PTP_KHACH_HANGController extends Controller
         return view('ptpadmins.ptpkhachhang.ptp-create', compact('ptpKhachHang'));
     }
     
-    public function ptpCreateSubmit(Request $request) {
-        // Validate dữ liệu từ form
-        $validatedData = $request->validate([
-            'ptpTenSanPham' => 'required|string|max:255',
-            'ptpSoLuong' => 'required|integer|min:1',
-            'ptpDonGia' => 'required|numeric|min:0',
-            'ptpMaLoai' => 'required',
-            'ptpTrangThai' => 'required|in:1,0',
-            'ptpHinhAnh' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
-        ], [
-            'ptpTenSanPham.required' => 'Tên sản phẩm là bắt buộc.',
-            'ptpSoLuong.required' => 'Số lượng sản phẩm là bắt buộc.',
-            'ptpDonGia.required' => 'Đơn giá là bắt buộc.',
-            'ptpHinhAnh.image' => 'Hình ảnh phải có định dạng hợp lệ (jpg, jpeg, png, gif).',
-            'ptpHinhAnh.max' => 'Hình ảnh không được vượt quá 2MB.',
-        ]);
+    public function ptpCreateSubmit(Request $request) 
+    {
+        $validate = $request->validate([
+            'ptpMaKhachHang' => 'required|unique:PTP_KHACH_HANG,ptpMaKhachHang',
+            'ptpHoTenKhachHang' => 'required|string',
+            'ptpEmail' => 'required|email|unique:PTP_KHACH_HANG,ptpEmail',
+            'ptpMatKhau' => 'required|min:6',
+            'ptpDienThoai' => 'required|numeric|unique:PTP_KHACH_HANG,ptpDienThoai',
+            'ptpDiaChi' => 'required|string',
+            'ptpNgayDangKy' => 'required|date',
+            'ptpTrangThai' => 'required|in:0,1,2',
+            ]);
     
-        // Tạo đối tượng sản phẩm mới
-        $ptpSanPham = new PTP_SAN_PHAM;
-        $ptpSanPham->ptpMaSanPham = $request->ptpMaSanPham;
-        $ptpSanPham->ptpTenSanPham = $request->ptpTenSanPham;
-        $ptpSanPham->ptpSoLuong = $request->ptpSoLuong;
-        $ptpSanPham->ptpDonGia = $request->ptpDonGia;
-        $ptpSanPham->ptpMaLoai = $request->ptpMaLoai;
-        $ptpSanPham->ptpTrangThai = $request->ptpTrangThai;
+        $ptpkhachhang = new PTP_KHACH_HANG;
+        $ptpkhachhang->ptpMaKhachHang = $request->ptpMaKhachHang;
+        $ptpkhachhang->ptpHoTenKhachHang = $request->ptpHoTenKhachHang;
+        $ptpkhachhang->ptpEmail = $request->ptpEmail;
+        $ptpkhachhang->ptpMatKhau = bcrypt($request->ptpMatKhau); // Mã hóa mật khẩu
+        $ptpkhachhang->ptpDienThoai = $request->ptpDienThoai;
+        $ptpkhachhang->ptpDiaChi = $request->ptpDiaChi;
+        $ptpkhachhang->ptpNgayDangKy = $request->ptpNgayDangKy;
+        $ptpkhachhang->ptpTrangThai = $request->ptpTrangThai;
     
-        // Xử lý hình ảnh nếu có
-        if ($request->hasFile('ptpHinhAnh')) {
-            $image = $request->file('ptpHinhAnh');
-            if ($image->isValid()) {
-                // Tạo tên file ảnh duy nhất
-                $fileName = time() . '_' . $image->getClientOriginalName();
-                // Di chuyển tệp vào thư mục lưu trữ cố định
-                $image->move(public_path('images/san-pham'), $fileName);
+        $ptpkhachhang->save();
     
-                // Lưu đường dẫn vào CSDL
-                $ptpSanPham->ptpHinhAnh = 'images/san-pham/' . $fileName;
-            } else {
-                return redirect()->back()->with('error', 'Ảnh không hợp lệ hoặc không được chọn.');
-            }
+        return redirect()->route('ptpadmins.ptpkhachhang.ptplist')->with('success', 'Tạo khách hàng thành công!');
         }
     
-        try {
-            $ptpSanPham->save();
-            return redirect()->route('ptpadmins.ptpSanPham')->with('ptp-success', 'Thêm sản phẩm thành công!');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Có lỗi xảy ra khi thêm sản phẩm: ' . $e->getMessage());
-        }
-    }
     public function ptpEdit($id)
-{
-    // Find the customer by ID
-    $ptpKhachHang = PTP_KHACH_HANG::find($id);
-
-    // If customer doesn't exist, redirect with an error message
-    if (!$ptpKhachHang) {
-        return redirect()->route('ptpadmins.ptpkhachhang.ptplist')->with('error', 'Khách hàng không tồn tại.');
+    {
+        // Lấy khách hàng theo id
+        $ptpkhachhang = PTP_KHACH_HANG::where('id', $id)->first();
+    
+        // Kiểm tra nếu khách hàng không tồn tại
+        if (!$ptpkhachhang) {
+            return redirect()->route('ptpadmins.ptpkhachhang.ptplist')->with('error', 'Khách hàng không tồn tại!');
+        }
+    
+        // Trả về view để chỉnh sửa khách hàng
+        return view('ptpadmins.ptpkhachhang.ptpedit', ['ptpkhachhang' => $ptpkhachhang]);
     }
-
-    // Return the view with customer data
-    return view('ptpadmins.ptpkhachhang.ptpedit', compact('ptpKhachHang'));
-}
 
 #edit submit
 public function ptpEditSubmit(Request $request, $id)
 {
-    // Validate the incoming data
-    $request->validate([
-        'ptpHotenkhachhang' => 'required|string|max:255',
-        'ptpEmail' => 'required|email|max:255',
-        'ptpDienThoai' => 'required|string|max:255',
-        'ptpDiaChi' => 'required|string|max:255',
-        'ptpNgayDK' => 'required|date',
-        'ptpTrangThai' => 'required|boolean',
+    $validate = $request->validate([
+        'ptpMaKhachHang' => 'required|unique:PTP_KHACH_HANG,ptpMaKhachHang,' . $id,
+        'ptpHoTenKhachHang' => 'required|string',
+        'ptpEmail' => 'required|email|unique:PTP_KHACH_HANG,ptpEmail,' . $id,
+        'ptpMatKhau' => 'nullable|min:6',
+        'ptpDienThoai' => 'required|numeric|unique:PTP_KHACH_HANG,ptpDienThoai,' . $id,
+        'ptpDiaChi' => 'required|string',
+        'ptpNgayDangKy' => 'required|date',
+        'ptpTrangThai' => 'required|in:0,1,2',
     ]);
 
-    // Find the customer by ID
-    $ptpKhachHang = PTP_KHACH_HANG::find($id);
+    $ptpkhachhang = PTP_KHACH_HANG::where('id', $id)->first();
 
-    // If customer doesn't exist, redirect with an error message
-    if (!$ptpKhachHang) {
-        return redirect()->route('ptpadmins.ptpkhachhang.ptplist')->with('error', 'Khách hàng không tồn tại.');
+    if (!$ptpkhachhang) {
+        return redirect()->route('ptpadmins.ptpkhachhang.ptplist')->with('error', 'Khách hàng không tồn tại!');
     }
 
-    // Update the customer with the form data
-    $ptpKhachHang->ptpHoTenKhachHang = $request->ptpHoTenKhachHang;
-    $ptpKhachHang->ptpEmail = $request->ptpEmail;
-    $ptpKhachHang->ptpDienThoai = $request->ptpDienThoai;
-    $ptpKhachHang->ptpDiaChi = $request->ptpDiaChi;
-    $ptpKhachHang->ptpNgayDK = $request->ptpNgayDK;
-    $ptpKhachHang->ptpTrangThai = $request->ptpTrangThai;
+    $ptpkhachhang->ptpMaKhachHang = $request->ptpMaKhachHang;
+    $ptpkhachhang->ptpHoTenKhachHang = $request->ptpHoTenKhachHang;
+    $ptpkhachhang->ptpEmail = $request->ptpEmail;
 
-    // Save the updated customer details
-    $ptpKhachHang->save();
+    if ($request->ptpMatKhau) {
+        $ptpkhachhang->ptpMatKhau = bcrypt($request->ptpMatKhau); // Mã hóa mật khẩu nếu có thay đổi
+    }
 
-    // Redirect back with a success message
-    return redirect()->route('ptpadmins.ptpkhachhang.ptplist')->with('success', 'Khách hàng đã được cập nhật thành công.');
-}
+    $ptpkhachhang->ptpDienThoai = $request->ptpDienThoai;
+    $ptpkhachhang->ptpDiaChi = $request->ptpDiaChi;
+    $ptpkhachhang->ptpNgayDangKy = $request->ptpNgayDangKy;
+    $ptpkhachhang->ptpTrangThai = $request->ptpTrangThai;
+
+    $ptpkhachhang->save();
+
+    return redirect()->route('ptpadmins.ptpkhachhang.ptplist')->with('success', 'Cập nhật khách hàng thành công!');
+    }
 
 }
