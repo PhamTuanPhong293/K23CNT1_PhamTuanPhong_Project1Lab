@@ -1,0 +1,6 @@
+tk:phongpham29305@gmail.com or 0981907669
+mk:123456789
+
+vào trang http://127.0.0.1:8000/login để đăng nhập vào trang http://127.0.0.1:8000/ptp-admins
+
+link github: https://github.com/PhamTuanPhong293/K23CNT1_PhamTuanPhong_Project1Lab.git
