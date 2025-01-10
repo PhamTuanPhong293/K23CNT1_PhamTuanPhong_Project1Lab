@@ -19,9 +19,10 @@
     <li class="list-group-item">
         <a href="/ptp-admins/ptp-ct-hoa-don">CT Hóa Đơn</a>
     </li>
-    <li class="list-group-item">
-        <a href="#">ĐĂNG XUẤT</a>
-    </li>
+    <form action="{{ route('logout') }}" method="POST">
+        @csrf
+        <button type="submit" class="btn btn-outline-light btn-sm">Đăng xuất</button>
+    </form>
   </ul>
   <style>
     /* Kiểu cho danh sách */

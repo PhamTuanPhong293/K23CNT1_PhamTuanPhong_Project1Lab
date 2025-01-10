@@ -19,7 +19,7 @@ class ptpAdminController extends Controller
         // Validate dữ liệu từ form
         $validatedData = $request->validate([
             'ptpTaiKhoan' => 'required|string|min:6|max:255',
-            'ptpMatKhau' => 'required|min:6',
+            'ptpMatKhau' => 'required|min:50',
             'ptpTrangThai' => 'required|in:1,0',
         ], [
             'ptpTaiKhoan.required' => 'Tài khoản là bắt buộc.',
@@ -43,7 +43,7 @@ class ptpAdminController extends Controller
         }
         return view('ptpadmins.ptpadmin.ptpedit', compact('ptpadmin'));
     }
-    public function ptpeditadminSubmit(Request $request)
+    public function ptpEditSubmit(Request $request)
     {
         // Lấy dữ liệu từ form
         $id_ = $request->ptpID;  // Hoặc $request->ptpID

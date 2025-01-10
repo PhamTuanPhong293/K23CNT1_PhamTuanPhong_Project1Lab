@@ -7,6 +7,8 @@ use App\Http\Controllers\PTP_LOAI_SAN_PHAMController;
 use App\Http\Controllers\PTP_QUAN_TRIController;
 use App\Http\Controllers\PTP_SAN_PHAMController;
 use App\Http\Controllers\ptpAdminController;
+use App\Http\Controllers\ptpLogin;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -158,3 +160,16 @@ Route::get('/ptp-admins/ptp-admin/ptp-create/{id}', [ptpAdminController::class, 
 Route::post('/ptp-admins/ptp-admin/ptp-create', [ptpAdminController::class, 'ptpCreateSubmit'])
         ->name('ptpadmins.ptpadmin.ptpcreatesubmit');
 
+//Login
+
+Route::get('/login', [ptpLogin::class, 'showLoginForm'])->name('login');
+Route::post('/login', [ptpLogin::class, 'login']);
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect('/login');
+})->name('logout');
+
+Route::get('/ptp-admins', function () {
+        return view('_layouts.admins._master'); // Đảm bảo view này tồn tại
+    })->name('ptp-admins')->middleware('auth');
+    

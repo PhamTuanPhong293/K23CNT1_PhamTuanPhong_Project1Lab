@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class PTP_QUAN_TRIController extends Controller
 {
     public function ptpLogin(){
-        return view('PtpLogin.ptp-login');
+        return view('auth.login');
     }
 
     public function ptpLoginSubmit(Request $request)
@@ -17,7 +17,7 @@ class PTP_QUAN_TRIController extends Controller
         $password = $request->input('password');
 
         // Ví dụ: nếu thông tin đăng nhập hợp lệ
-        if ($phone === '0981907669' && $password === '123456a@') {
+        if ($phone === '0981907669' && $password === '123456789') {
             // Chuyển hướng đến trang quản trị
             return redirect('/ptp-admins#');
         }
